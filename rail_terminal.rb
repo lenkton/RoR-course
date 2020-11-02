@@ -14,3 +14,22 @@ class Station
     @trains.delete train
   end
 end
+
+class Route
+  def initialize(first, last)
+    @first = first
+    @last = last
+    @intermediate = []
+  end
+  def add_station(station)
+    @intermediate << station
+  end
+  def remove_station(station)
+    @intermediate.delete station
+  end
+  def get_stations
+    res = [first]
+    res += @intermediate
+    res << last
+  end
+end
