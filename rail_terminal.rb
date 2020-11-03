@@ -38,8 +38,17 @@ class Route
     @intermediate = [] 
   end
 
+  # actually, ready for random position insertion
   def add_station(station) 
     @intermediate << station 
+
+    pr = self.prev(station)
+    fw = self.forw(station)
+    
+    for tr in station.trains
+      tr.prev_station = station if tr.prev_station == pr
+      tr.next_station = station if tr.next_station == fw
+    end
   end
 
   # returns the next station in the route
