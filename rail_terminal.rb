@@ -18,17 +18,44 @@ class Station
   end 
 end
 
-class Route def initialize(first, last) 
-  @first = first 
-  @last = last
-  @intermediate = [] 
-end
+class Route 
+  def initialize(first, last) 
+    @first = first 
+    @last = last
+    @intermediate = [] 
+  end
 
   def add_station(station) 
     @intermediate << station 
   end
 
+  # returns the next station in the route
+  def forw(station)
+    if station == @last
+      @last
+    else
+      stats = self.get_stations
+
+      stats[stats.index(station) + 1]
+    end
+  end
+
+  # returns the previous station in the route
+  def back(station)
+    if station == @first
+      @first
+    else
+      stats = self.get_stations
+
+      stats[stats.index(station) - 1]
+    end
+  end
+
   def remove_station(station) 
+    for tr in station.trains
+      tr.prev_station = back(station) if tr.prev_station = station
+      tr.next_station = forw(station) if tr.next_station = station
+    end
     @intermediate.delete(station) 
   end
 
@@ -40,8 +67,9 @@ end
 end
 
 class Train 
+  # issue: incapsulation is dead, needs reworking
   attr_reader :car_num, :cur_station 
-  attr_accessor :speed
+  attr_accessor :speed, :prev_station, :next_station
 
   def initialize(num, type, car_num) 
     @num = num 
@@ -66,43 +94,31 @@ class Train
   def route= (route) 
     @route = route 
     @cur_station = route.first 
+    @prev_station = route.first
+    @next_station = route.forw(route.first)
   end
 
-  # issue: the @cur_station could be deleted from the @route...
   def move_forward 
     if @cur_station != @route.last 
       @cur_station.send_train(self)
     
       @cur_station = self.next_station
       @cur_station.add_train(self) 
+
+      self.prev_station = @route.back(self.cur_station)
+      self.next_station = @route.forw(self.cur_station)
     end 
   end
 
-  # same issue
   def move_backward 
     if @cur_station != @route.first 
       @cur_station.send_train(self)
     
       @cur_station = self.prev_station
       @cur_station.add_train(self)
-    end 
-  end
-# rework!! make pver_st and next_st instance variables!
-  # And in the Route-modification methods reassign @next and @prev of the trains,
-  # which are located in the current Station
-  def next_station
-    if @cur_station != @route.last 
-      stats = @route.get_stations
 
-      stats[stats.index(@cur_station) + 1]
-    end
-  end
-
-  def prev_station
-    if @cur_station != @route.first 
-      stats = @route.get_stations
-
-      stats[stats.index(@cur_station) - 1]
+      self.prev_station = @route.back(self.cur_station)
+      self.next_station = @route.forw(self.cur_station)
     end
   end
 end
