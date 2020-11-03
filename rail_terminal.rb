@@ -1,5 +1,5 @@
 class Station 
-  attr_reader :trains
+  attr_reader :trains, :name
 
   def initialize(name) 
     @name = name 
@@ -90,7 +90,7 @@ end
 
 class Train 
   # issue: incapsulation is dead, needs reworking
-  attr_reader :car_num, :cur_station, :type
+  attr_reader :car_num, :cur_station, :type, :num
   attr_accessor :speed, :prev_station, :next_station
 
   def initialize(num, type, car_num) 
