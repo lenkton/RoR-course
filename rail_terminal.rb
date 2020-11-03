@@ -40,7 +40,7 @@ end
 end
 
 class Train 
-  attr_reader :car_num 
+  attr_reader :car_num, :cur_station 
   attr_accessor :speed
 
   def initialize(num, type, car_num) 
@@ -71,15 +71,38 @@ class Train
   # issue: the @cur_station could be deleted from the @route...
   def move_forward 
     if @cur_station != @route.last 
-      stats = @route.get_stations
       @cur_station.send_train(self)
     
-      @cur_station = stats[stats.index(@cur_station) + 1]
+      @cur_station = self.next_station
       @cur_station.add_train(self) 
     end 
   end
 
+  # same issue
   def move_backward 
+    if @cur_station != @route.first 
+      @cur_station.send_train(self)
+    
+      @cur_station = self.prev_station
+      @cur_station.add_train(self)
+    end 
+  end
+# rework!! make pver_st and next_st instance variables!
+  # And in the Route-modification methods reassign @next and @prev of the trains,
+  # which are located in the current Station
+  def next_station
+    if @cur_station != @route.last 
+      stats = @route.get_stations
 
+      stats[stats.index(@cur_station) + 1]
+    end
+  end
+
+  def prev_station
+    if @cur_station != @route.first 
+      stats = @route.get_stations
+
+      stats[stats.index(@cur_station) - 1]
+    end
   end
 end
