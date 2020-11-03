@@ -2,15 +2,26 @@ class Station
   attr_reader :trains
 
   def initialize(name) 
-    @name = name @trains = [] 
+    @name = name 
+    @trains = [] 
   end
 
   def add_train(train) 
     @trains << train 
   end
 
+  # :pas - for passenger, :cargo - for cargo
   def get_trains_by_type(type)
-    #TODO
+    cargo = 0
+    pas = 0
+    for tr in @trains
+      if tr.type == :pas
+        pas += tr.car_num
+      else
+        cargo += tr.car_num
+      end
+    end
+    puts "Cargo: #{cargo}, Passenger: #{pas}"
   end
 
   def send_train(train) 
@@ -18,7 +29,9 @@ class Station
   end 
 end
 
-class Route 
+class Route
+  attr_reader :first, :last
+
   def initialize(first, last) 
     @first = first 
     @last = last
@@ -68,7 +81,7 @@ end
 
 class Train 
   # issue: incapsulation is dead, needs reworking
-  attr_reader :car_num, :cur_station 
+  attr_reader :car_num, :cur_station, :type
   attr_accessor :speed, :prev_station, :next_station
 
   def initialize(num, type, car_num) 
@@ -92,10 +105,15 @@ class Train
   end
 
   def route= (route) 
+    if @cur_station != nil
+      @cur_station.send_train(self)
+    end
+
     @route = route 
     @cur_station = route.first 
     @prev_station = route.first
     @next_station = route.forw(route.first)
+    @cur_station.add_train(self)
   end
 
   def move_forward 
