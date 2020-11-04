@@ -12,16 +12,7 @@ class Station
 
   # :pas - for passenger, :cargo - for cargo
   def get_trains_by_type(type)
-    cargo = 0
-    pas = 0
-    for tr in @trains
-      if tr.type == :pas
-        pas += tr.car_num
-      else
-        cargo += tr.car_num
-      end
-    end
-    puts "Cargo: #{cargo}, Passenger: #{pas}"
+    @trains.filter { |tr| tr.type = type }
   end
 
   def send_train(train) 
@@ -81,10 +72,8 @@ class Route
     @intermediate.delete(station) 
   end
 
-  def get_stations 
-    res = [first] 
-    res += @intermediate 
-    res << last 
+  def stations 
+    [first, *@intermediate, last]
   end 
 end
 
@@ -126,26 +115,24 @@ class Train
   end
 
   def move_forward 
-    if @cur_station != @route.last 
-      @cur_station.send_train(self)
+    return if @cur_station == @route.last 
+    @cur_station.send_train(self)
     
-      @cur_station = self.next_station
-      @cur_station.add_train(self) 
-
-      self.prev_station = @route.back(self.cur_station)
-      self.next_station = @route.forw(self.cur_station)
-    end 
+    @cur_station = self.next_station
+    @cur_station.add_train(self) 
+  
+    self.prev_station = @route.back(self.cur_station)
+    self.next_station = @route.forw(self.cur_station)
   end
 
   def move_backward 
-    if @cur_station != @route.first 
-      @cur_station.send_train(self)
+    return if @cur_station == @route.first 
+    @cur_station.send_train(self)
     
-      @cur_station = self.prev_station
-      @cur_station.add_train(self)
+    @cur_station = self.prev_station
+    @cur_station.add_train(self)
 
-      self.prev_station = @route.back(self.cur_station)
-      self.next_station = @route.forw(self.cur_station)
-    end
+    self.prev_station = @route.back(self.cur_station)
+    self.next_station = @route.forw(self.cur_station)
   end
 end
