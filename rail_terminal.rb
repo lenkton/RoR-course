@@ -1,3 +1,4 @@
+# Ruby ver. 2.2.1
 class Station 
   attr_reader :trains, :name
 
@@ -12,7 +13,7 @@ class Station
 
   # :pas - for passenger, :cargo - for cargo
   def get_trains_by_type(type)
-    @trains.filter { |tr| tr.type = type }
+    @trains.select { |tr| tr.type = type }
   end
 
   def send_train(train) 
@@ -27,60 +28,64 @@ class Route
     @first = first 
     @last = last
     @intermediate = [] 
+    @versions = []
   end
 
-  # actually, ready for random position insertion
   def add_station(station) 
-    @intermediate << station 
-
-    pr = self.prev(station)
-    fw = self.forw(station)
-    
-    for tr in station.trains
-      tr.prev_station = station if tr.prev_station == pr
-      tr.next_station = station if tr.next_station == fw
-    end
+    @intermediate.delete([station, :hidden])
+    @intermediate << [station, :show]
   end
 
   # returns the next station in the route
-  def forw(station)
+  def next_station(station)
     if station == @last
-      @last
-    else
-      stats = self.get_stations
-
-      stats[stats.index(station) + 1]
+      return @last
     end
+
+    stats = self.stations
+
+    if (pos = stats.index(station)) != nil
+      return stats[pos + 1]
+    end
+    
+    true_pos = @intermediate.index([station, :hidden])
+    res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) > true_pos }.first
+    res ? res : @last
   end
 
   # returns the previous station in the route
-  def back(station)
+  def previous_station(station)
     if station == @first
-      @first
-    else
-      stats = self.get_stations
-
-      stats[stats.index(station) - 1]
+      return @first
     end
+
+    stats = self.stations
+
+    if (pos = stats.index(station)) != nil
+      return stats[pos - 1]
+    end
+
+    true_pos = @intermediate.index([station, :hidden])
+    res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) < true_pos }.first
+    res ? res : @first    
   end
 
   def remove_station(station) 
-    for tr in station.trains
-      tr.prev_station = back(station) if tr.prev_station = station
-      tr.next_station = forw(station) if tr.next_station = station
-    end
-    @intermediate.delete(station) 
+    @intermediate[@intermediate.index([station, :show])][1] = :hidden
   end
 
   def stations 
-    [first, *@intermediate, last]
+    [
+      first, 
+      *(@intermediate.select { |st| st[1] == :show } ),
+      last
+    ]
   end 
 end
 
 class Train 
-  # issue: incapsulation is dead, needs reworking
-  attr_reader :car_num, :cur_station, :type, :num
-  attr_accessor :speed, :prev_station, :next_station
+  attr_reader :car_num, :current_station, :type, :num
+  attr_accessor :speed
 
   def initialize(num, type, car_num) 
     @num = num 
@@ -103,36 +108,36 @@ class Train
   end
 
   def route= (route) 
-    if @cur_station != nil
-      @cur_station.send_train(self)
+    if @current_station != nil
+      @current_station.send_train(self)
     end
 
     @route = route 
-    @cur_station = route.first 
-    @prev_station = route.first
-    @next_station = route.forw(route.first)
-    @cur_station.add_train(self)
+    @current_station = route.first 
+    @current_station.add_train(self)
   end
 
   def move_forward 
-    return if @cur_station == @route.last 
-    @cur_station.send_train(self)
+    return if @current_station == @route.last 
+    @current_station.send_train(self)
     
-    @cur_station = self.next_station
-    @cur_station.add_train(self) 
-  
-    self.prev_station = @route.back(self.cur_station)
-    self.next_station = @route.forw(self.cur_station)
+    @current_station = @route.next_station(@cur_station)
+    @current_station.add_train(self) 
   end
 
   def move_backward 
-    return if @cur_station == @route.first 
-    @cur_station.send_train(self)
+    return if @current_station == @route.first 
+    @current_station.send_train(self)
     
-    @cur_station = self.prev_station
-    @cur_station.add_train(self)
+    @current_station = @route.previous_station(@cur_station)
+    @current_station.add_train(self)
+  end
 
-    self.prev_station = @route.back(self.cur_station)
-    self.next_station = @route.forw(self.cur_station)
+  def previous_station
+    @route.previous_station(@cur_station)
+  end
+
+  def next_station
+    @route.next_station(@cur_station)
   end
 end
