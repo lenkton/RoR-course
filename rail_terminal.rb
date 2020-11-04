@@ -13,7 +13,7 @@ class Station
 
   # :pas - for passenger, :cargo - for cargo
   def get_trains_by_type(type)
-    @trains.select { |tr| tr.type = type }
+    @trains.select { |tr| tr.type == type }
   end
 
   def send_train(train) 
