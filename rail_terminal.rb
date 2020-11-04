@@ -28,7 +28,6 @@ class Route
     @first = first 
     @last = last
     @intermediate = [] 
-    @versions = []
   end
 
   #it is presumed, that we do not add stations, 
@@ -106,7 +105,6 @@ class Train
     @type = type 
     @car_num = car_num
     @speed = 0 
-    @route = nil 
   end
 
   def stop 
