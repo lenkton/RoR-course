@@ -31,13 +31,18 @@ class Route
     @versions = []
   end
 
+  #it is presumed, that we do not add stations, 
+  #which are not deleted of have never been added to the Route
   def add_station(station) 
-    @intermediate.delete([station, :hidden])
-    @intermediate << [station, :show]
+    @intermediate.delete({station: station, status: :hidden})
+
+    @intermediate << {station: station, status: :show}
   end
 
   def remove_station(station) 
-    @intermediate[@intermediate.index { |elem| elem[0] == station } ][1] = :hidden
+    @intermediate[
+      @intermediate.index { |elem| elem[:station] == station } 
+    ][:status] = :hidden
   end
 
   # returns the next station in the route
@@ -52,9 +57,13 @@ class Route
       return stats[pos + 1]
     end
     
-    true_pos = @intermediate.index([station, :hidden])
-    res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) > true_pos }.first
-    res ? res[0] : @last
+    true_pos = @intermediate.index({station: station, status: :hidden})
+    res = 
+      @intermediate.select { 
+        |elem| 
+        elem[:status] == :show && @intermediate.index(elem) > true_pos 
+      }.first
+    res ? res[:station] : @last
   end
 
   # returns the previous station in the route
@@ -70,15 +79,19 @@ class Route
     end
     
 
-    true_pos = @intermediate.index([station, :hidden])
-    res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) < true_pos }.first
-    res ? res[0] : @first    
+    true_pos = @intermediate.index({station: station, status: :hidden})
+    res = 
+      @intermediate.select { 
+        |elem| 
+        elem[:status] == :show && @intermediate.index(elem) < true_pos 
+      }.first
+    res ? res[:station] : @first    
   end
 
   def stations 
     [
       first, 
-      *(@intermediate.select { |st| st[1] == :show } ).map { |elem| elem[0] },
+      *(@intermediate.select { |st| st[:status] == :show } ).map { |elem| elem[:station] },
       last
     ]
   end 
