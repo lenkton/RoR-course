@@ -38,7 +38,8 @@ class Route
   # removes the station from the @intermediate list
   def remove_station(station)
     if station.trains.any? { |tr| tr.route == self }
-      return puts "Alarm! Alarm! Some trains at #{station} could get lost!"
+      puts "Alarm! Alarm! Some trains at #{station} could get lost!"
+      return
     end
 
     @intermediate.delete(station)
@@ -80,8 +81,8 @@ class Train
   # and moves the Train to the first station of the new Route
   # (also, deletes the Train from the previous Station trains list
   # and adds to the new Station's list)
-  def route= (route)
-    @current_station.send_train(self) unless @current_station.nil?
+  def route=(route)
+    @current_station.send_train(self) unless @current_station
 
     @route = route
     @current_station = route.first
