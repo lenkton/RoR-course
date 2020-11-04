@@ -30,69 +30,19 @@ class Route
     @intermediate = [] 
   end
 
-  #it is presumed, that we do not add stations, 
-  #which are not deleted of have never been added to the Route
+  # adds station to the route (at the position right before the end)
   def add_station(station) 
-    @intermediate.delete({station: station, status: :hidden})
-
-    @intermediate << {station: station, status: :show}
+    @intermediate << station
   end
 
+  # removes the station from the @intermediate list
   def remove_station(station) 
-    @intermediate[
-      @intermediate.index { |elem| elem[:station] == station } 
-    ][:status] = :hidden
+    @intermediate.delete(station)
   end
 
-  # returns the next station in the route
-  def next_station(station)
-    if station == @last
-      return @last
-    end
-
-    stats = self.stations
-
-    if (pos = stats.index(station)) != nil
-      return stats[pos + 1]
-    end
-    
-    true_pos = @intermediate.index({station: station, status: :hidden})
-    res = 
-      @intermediate.select { 
-        |elem| 
-        elem[:status] == :show && @intermediate.index(elem) > true_pos 
-      }.first
-    res ? res[:station] : @last
-  end
-
-  # returns the previous station in the route
-  def previous_station(station)
-    if station == @first
-      return @first
-    end
-
-    stats = self.stations
-
-    if (pos = stats.index(station))
-      return stats[pos - 1]
-    end
-    
-
-    true_pos = @intermediate.index({station: station, status: :hidden})
-    res = 
-      @intermediate.select { 
-        |elem| 
-        elem[:status] == :show && @intermediate.index(elem) < true_pos 
-      }.first
-    res ? res[:station] : @first    
-  end
-
+  #returns the list of all stations in the route
   def stations 
-    [
-      first, 
-      *(@intermediate.select { |st| st[:status] == :show } ).map { |elem| elem[:station] },
-      last
-    ]
+    [first, *@intermediate, last]
   end 
 end
 
@@ -107,18 +57,25 @@ class Train
     @speed = 0 
   end
 
+  # stops the Train
   def stop 
     self.speed = 0 
   end
 
+  # adds one cargo, if the Train is stopped
   def add_car 
     @car_num += 1 if self.speed == 0 
   end
 
+  # removes one cargo, if the Train is stopped
   def rem_car 
     @car_num -= 1 if self.speed == 0 
   end
 
+  # assigns the new route to the Train 
+  # and moves the Train to the first station of the new Route
+  # (also, deletes the Train from the previous Station trains list
+  # and adds to the new Station's list)
   def route= (route) 
     if @current_station != nil
       @current_station.send_train(self)
@@ -129,27 +86,35 @@ class Train
     @current_station.add_train(self)
   end
 
+  # moves the Train to the next Station in the @route
+  # does nothing, if the Train is already at the last Station of the @route
   def move_forward 
     return if @current_station == @route.last 
     @current_station.send_train(self)
     
-    @current_station = @route.next_station(@current_station)
+    @current_station = self.next_station
     @current_station.add_train(self) 
   end
 
+  # moves the Train to the previous Station in the @route
+  # does nothing, if the Train is already at the first Station of the @route
   def move_backward 
     return if @current_station == @route.first 
     @current_station.send_train(self)
     
-    @current_station = @route.previous_station(@current_station)
+    @current_station = self.previous_station
     @current_station.add_train(self)
   end
 
+  # returns the previous station in the route
   def previous_station
-    @route.previous_station(@current_station)
+    return @current_station if @current_station == @route.first
+    return @route.stations[-1 + @route.stations.index(@current_station)]
   end
 
+  # returns the next station in the route
   def next_station
-    @route.next_station(@current_station)
+    return @current_station if @current_station == @route.last
+    return @route.stations[1 + @route.stations.index(@current_station)]
   end
 end
