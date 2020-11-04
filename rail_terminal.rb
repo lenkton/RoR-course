@@ -36,6 +36,10 @@ class Route
     @intermediate << [station, :show]
   end
 
+  def remove_station(station) 
+    @intermediate[@intermediate.index { |elem| elem[0] == station } ][1] = :hidden
+  end
+
   # returns the next station in the route
   def next_station(station)
     if station == @last
@@ -50,7 +54,7 @@ class Route
     
     true_pos = @intermediate.index([station, :hidden])
     res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) > true_pos }.first
-    res ? res : @last
+    res ? res[0] : @last
   end
 
   # returns the previous station in the route
@@ -61,23 +65,20 @@ class Route
 
     stats = self.stations
 
-    if (pos = stats.index(station)) != nil
+    if (pos = stats.index(station))
       return stats[pos - 1]
     end
+    
 
     true_pos = @intermediate.index([station, :hidden])
     res = @intermediate.select { |elem| elem[1] == :show && @intermediate.index(elem) < true_pos }.first
-    res ? res : @first    
-  end
-
-  def remove_station(station) 
-    @intermediate[@intermediate.index([station, :show])][1] = :hidden
+    res ? res[0] : @first    
   end
 
   def stations 
     [
       first, 
-      *(@intermediate.select { |st| st[1] == :show } ),
+      *(@intermediate.select { |st| st[1] == :show } ).map { |elem| elem[0] },
       last
     ]
   end 
@@ -121,7 +122,7 @@ class Train
     return if @current_station == @route.last 
     @current_station.send_train(self)
     
-    @current_station = @route.next_station(@cur_station)
+    @current_station = @route.next_station(@current_station)
     @current_station.add_train(self) 
   end
 
@@ -129,15 +130,15 @@ class Train
     return if @current_station == @route.first 
     @current_station.send_train(self)
     
-    @current_station = @route.previous_station(@cur_station)
+    @current_station = @route.previous_station(@current_station)
     @current_station.add_train(self)
   end
 
   def previous_station
-    @route.previous_station(@cur_station)
+    @route.previous_station(@current_station)
   end
 
   def next_station
-    @route.next_station(@cur_station)
+    @route.next_station(@current_station)
   end
 end
