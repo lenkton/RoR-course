@@ -113,13 +113,13 @@ class Train
   def previous_station
     return @current_station if @current_station == @route.first
 
-    return @route.stations[@route.stations.index(@current_station) - 1]
+    @route.stations[@route.stations.index(@current_station) - 1]
   end
 
   # returns the next station in the route
   def next_station
     return @current_station if @current_station == @route.last
 
-    return @route.stations[@route.stations.index(@current_station) + 1]
+    @route.stations[@route.stations.index(@current_station) + 1]
   end
 end
