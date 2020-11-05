@@ -1,11 +1,10 @@
 class Train
-  attr_reader :car_num, :current_station, :type, :num, :route
+  attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
-  def initialize(num, type, car_num)
+  def initialize(num)
+    @wagon_list = []
     @num = num
-    @type = type
-    @car_num = car_num
     @speed = 0
   end
 
@@ -14,14 +13,14 @@ class Train
     self.speed = 0
   end
 
-  # adds one cargo, if the Train is stopped
-  def add_car
-    @car_num += 1 if speed.zero?
+  # adds one wagon, if the Train is stopped
+  def add_wagon(wagon)
+    @wagon_list << wagon if speed.zero?
   end
 
-  # removes one cargo, if the Train is stopped
-  def rem_car
-    @car_num -= 1 if speed.zero?
+  # removes one wagon, if the Train is stopped
+  def remove_wagon(wagon)
+    @wagon_list << wagon if speed.zero?
   end
 
   # assigns the new route to the Train
