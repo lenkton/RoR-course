@@ -148,9 +148,12 @@ def main
       next unless correct_form?(command[1 .. -1], [:station, :route])
 
       $routes[command[2]].add_station($stations[command[1]])
+      puts "Station #{command[1]} was successfully added to the Route #{command[2]}"
     when 'remove-station'
       next unless correct_form?(command[1..-1], [:station, :route])
+
       $routes[command[2]].remove_station($stations[command[1]])
+      puts "Station #{command[1]} was successfully removed from the Route #{command[2]}"
     when 'add-wagon'
       next unless correct_form?(command[1..-1], [:train])
       
@@ -160,24 +163,36 @@ def main
       when :CargoTrain
         $trains[command[1]].add_wagon(CargoWagon.new())
       end
+      puts "A wagon was successfully added to the Train #{command[1]}"
     when 'remove-wagon'
       next unless correct_form?(command[1..-1], [:train])
+      
       $trains[command[1]].remove_last_wagon
+      puts "A wagon was successfully removed from the Train #{command[1]}"
     when 'stations'
+      puts "At the moment these stations were created:"
       for name, st in $stations
         puts name
       end
     when 'assign'
       next unless correct_form?(command[1..-1], [:route, :train])
+
       $trains[command[2]].route = $routes[command[1]]
+      puts "The Route #{command[1]} was successfully assigned to the Train #{command[2]}"
     when 'trains'
       next unless correct_form?(command[1..-1], [:station])
       
+      puts "At the moment these Trains are at the Station #{command[1]}:"
       for tr in $stations[command[1]].trains
         puts tr.num
       end
     when 'move'
       next unless correct_form?(command[1..-1], [:train, :any])
+
+      unless $trains[command[1]].route
+        puts "The train #{command[1]} has no Route assigned!"
+        next
+      end
 
       case command[2]
       when 'forward'
@@ -187,8 +202,13 @@ def main
       else
         puts "Error: wrong syntax. Trains could move only back and forward."
         puts HELP_REMINDER
+        next
       end
+
+      puts "Train #{command[1]} was successfully moved #{command[2]} "\
+        "to the station #{$trains[command[1]].current_station}"
     else
+      puts "There is no command '#{command[0]}'"
       puts HELP_REMINDER
     end
   end
