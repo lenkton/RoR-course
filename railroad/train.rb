@@ -32,7 +32,7 @@ class Train
   # (also, deletes the Train from the previous Station trains list
   # and adds to the new Station's list)
   def route=(route)
-    @current_station.send_train(self) unless @current_station
+    @current_station.send_train(self) if @current_station
 
     @route = route
     @current_station = route.first

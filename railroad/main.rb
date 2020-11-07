@@ -97,7 +97,7 @@ def correct_form?(args, correct_args)
     return
   end
 
-  for i in 0 .. correct_args.size
+  for i in 0 .. (correct_args.size - 1)
     case correct_args[i]
     when :train
       unless $trains.include?(args[i])
@@ -145,39 +145,39 @@ def main
     when 'create'
       create_object(command[1 .. -1])
     when 'add-station'
-      return unless correct_form?(command[1 .. -1], [:station, :route])
+      next unless correct_form?(command[1 .. -1], [:station, :route])
 
       $routes[command[2]].add_station($stations[command[1]])
     when 'remove-station'
-      return unless correct_form?(command[1..-1], [:station, :route])
+      next unless correct_form?(command[1..-1], [:station, :route])
       $routes[command[2]].remove_station($stations[command[1]])
     when 'add-wagon'
-      return unless correct_form?(command[1..-1], [:train])
+      next unless correct_form?(command[1..-1], [:train])
       
-      case $trains[command[1]].type
-      when :passenger
+      case $trains[command[1]].class
+      when :PassengerTrain
         $trains[command[1]].add_wagon(PassengerWagon.new())
-      when :cargo
+      when :CargoTrain
         $trains[command[1]].add_wagon(CargoWagon.new())
       end
     when 'remove-wagon'
-      return unless correct_form?(command[1..-1], [:train])
+      next unless correct_form?(command[1..-1], [:train])
       $trains[command[1]].remove_last_wagon
     when 'stations'
-      for st in $stations
-        puts st.name
+      for name, st in $stations
+        puts name
       end
     when 'assign'
-      return unless correct_form?(command[1..-1], [:route, :train])
+      next unless correct_form?(command[1..-1], [:route, :train])
       $trains[command[2]].route = $routes[command[1]]
     when 'trains'
-      return unless correct_form?(command[1..-1], [:station])
+      next unless correct_form?(command[1..-1], [:station])
       
-      for tr in $stations[command[1]]
-        puts tr.name
+      for tr in $stations[command[1]].trains
+        puts tr.num
       end
     when 'move'
-      return unless correct_form?(command[1..-1], [:train, :any])
+      next unless correct_form?(command[1..-1], [:train, :any])
 
       case command[2]
       when 'forward'
@@ -194,3 +194,4 @@ def main
   end
 end
 
+main()
