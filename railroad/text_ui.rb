@@ -210,7 +210,7 @@ class TextUI
     puts GREETINGS
     puts HELP_REMINDER
 
-    while running
+    while @running
       print '>'
       command = gets.split
       run_command(command[0..-1]) unless command.empty?
