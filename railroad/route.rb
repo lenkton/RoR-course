@@ -23,7 +23,7 @@ class Route
     @intermediate.delete(station)
   end
 
-  #returns the list of all stations in the route
+  # returns the list of all stations in the route
   def stations
     [first, *@intermediate, last]
   end
