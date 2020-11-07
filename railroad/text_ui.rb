@@ -57,10 +57,12 @@ class TextUI
     end
   end
 
-  def create_object(args)
-    return puts CREATE_FORMAT_ERROR if args.empty?
+  def create_object(command)
+    return puts CREATE_FORMAT_ERROR if command.empty?
 
-    case args[0]
+    args = command[1..-1]
+
+    case command[0]
     when '--help' then puts CREATE_HELP
     when 'station' then create_station(args)
     when 'route' then create_route(args)
@@ -148,7 +150,7 @@ class TextUI
     end
   end
 
-  def assing(args)
+  def assign(args)
     return unless correct_form?(args, %i[route train])
 
     @trains[args[1]].route = @routes[args[0]]
