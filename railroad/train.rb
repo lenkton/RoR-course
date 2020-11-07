@@ -22,6 +22,10 @@ class Train
   def remove_wagon(wagon)
     @wagon_list << wagon if speed.zero?
   end
+  
+  def remove_last_wagon
+    @wagon_list.pop
+  end
 
   # assigns the new route to the Train
   # and moves the Train to the first station of the new Route

@@ -1,9 +1,23 @@
 HELP =
   "? or help - show this message\n"\
   "q or quit - close the program\n"\
+  "add-station <station> <route> - add the Station with the name <station>\n"\
+  "               to the Route with the number <route>\n"\
+  "add-wagon <train> - add a Wagon to the Train with the name <train>\n"\
+  "assign <route> <train> - assign the Route with the number <route>\n"\
+  "               to the Train with the number <train>\n"\
   "create <...> - create station/route/train\n"\
   "               (see create --help for additional info)\n"\
-  "..."
+  "move <train> [forward/back] - move the Train with the number <train>\n"\
+  "               forward (if 'forward') or backward (if 'back')\n"\
+  "               according to assigned Route\n"\
+  "remove-station <station> <route> - remove the Station with the name <station>\n"\
+  "               from the Route with the number <route>\n"\
+  "remove-wagon <train> - remove a Wagon from the Train with the name <train>\n"\
+  "stations - show the list of all created stations\n"\
+  "trains <station> - show the list of created Trains,\n"\
+  "               which are now at the Station with the name <station>\n"\
+  ""
 
 GREETINGS =
   "Welcome to Railway Management Client!"
@@ -25,4 +39,7 @@ CREATE_HELP =
 
 CREATE_FORMAT_ERROR =
   "Format error! See 'create --help' for additional info"
+
+ARG_NUM_ERROR =
+  "Error! Wrong number of arguments! See '?' or 'help' for help"
 

@@ -90,24 +90,107 @@ def create_object(args)
   end
 end
 
-running = true
-puts GREETINGS
-puts HELP_REMINDER
+# checks, if a user command follows the convention
+def correct_form?(args, correct_args)
+  if args == nil or args.size < correct_args.size
+    puts ARG_NUM_ERROR
+    return
+  end
 
-while running
-  print '>'
-  command = gets.split
-  case command[0]
-  when 'q'
-    running = false
-  when 'quit'
-    running = false
-  when 'help', '?'
-    puts HELP
-  when 'create'
-    create_object(command[1 .. -1])
-  else
-    puts HELP_REMINDER
+  for i in 0 .. correct_args.size
+    case correct_args[i]
+    when :train
+      unless $trains.include?(args[i])
+        puts "Error! Train #{args[i]} does not exist!"
+        puts HELP_REMINDER
+        return
+      end
+    when :station
+      unless $stations.include?(args[i])
+        puts "Error! Station #{args[i]} does not exist!"
+        puts HELP_REMINDER
+        return
+      end
+    when :route
+      unless $routes.include?(args[i])
+        puts "Error! Route #{args[i]} does not exist!"
+        puts HELP_REMINDER
+        return
+      end
+    when :any
+      ;
+    else
+      puts "DEBUG ALARM! WRONG correct_form?() usage!"
+    end
+  end
+
+  true
+end
+
+def main
+  running = true
+  puts GREETINGS
+  puts HELP_REMINDER
+
+  while running
+    print '>'
+    command = gets.split
+    case command[0]
+    when 'q'
+      running = false
+    when 'quit'
+      running = false
+    when 'help', '?'
+      puts HELP
+    when 'create'
+      create_object(command[1 .. -1])
+    when 'add-station'
+      return unless correct_form?(command[1 .. -1], [:station, :route])
+
+      $routes[command[2]].add_station($stations[command[1]])
+    when 'remove-station'
+      return unless correct_form?(command[1..-1], [:station, :route])
+      $routes[command[2]].remove_station($stations[command[1]])
+    when 'add-wagon'
+      return unless correct_form?(command[1..-1], [:train])
+      
+      case $trains[command[1]].type
+      when :passenger
+        $trains[command[1]].add_wagon(PassengerWagon.new())
+      when :cargo
+        $trains[command[1]].add_wagon(CargoWagon.new())
+      end
+    when 'remove-wagon'
+      return unless correct_form?(command[1..-1], [:train])
+      $trains[command[1]].remove_last_wagon
+    when 'stations'
+      for st in $stations
+        puts st.name
+      end
+    when 'assign'
+      return unless correct_form?(command[1..-1], [:route, :train])
+      $trains[command[2]].route = $routes[command[1]]
+    when 'trains'
+      return unless correct_form?(command[1..-1], [:station])
+      
+      for tr in $stations[command[1]]
+        puts tr.name
+      end
+    when 'move'
+      return unless correct_form?(command[1..-1], [:train, :any])
+
+      case command[2]
+      when 'forward'
+        $trains[command[1]].move_forward
+      when 'back'
+        $trains[command[1]].move_backward
+      else
+        puts "Error: wrong syntax. Trains could move only back and forward."
+        puts HELP_REMINDER
+      end
+    else
+      puts HELP_REMINDER
+    end
   end
 end
 
