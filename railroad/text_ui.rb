@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'cargo_train'
 require_relative 'passenger_train'
 require_relative 'station'
@@ -186,7 +188,7 @@ class TextUI
   def run_command(command)
     args = command [1..-1]
     case command[0]
-    when 'q', 'quit' then running = false
+    when 'q', 'quit' then @running = false
     when 'help', '?' then puts HELP
     when 'create' then create_object(args)
     when 'add-station' then add_station(args)
@@ -204,7 +206,7 @@ class TextUI
   end
 
   def run
-    running = true
+    @running = true
     puts GREETINGS
     puts HELP_REMINDER
 

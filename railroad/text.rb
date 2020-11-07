@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 HELP =
   "? or help - show this message\n"\
   "q or quit - close the program\n"\
@@ -17,13 +19,13 @@ HELP =
   "stations - show the list of all created stations\n"\
   "trains <station> - show the list of created Trains,\n"\
   "               which are now at the Station with the name <station>\n"\
-  ''.freeze
+  ''
 
 GREETINGS =
-  'Welcome to Railway Management Client!'.freeze
+  'Welcome to Railway Management Client!'
 
 HELP_REMINDER =
-  "Type '?' or 'help' to see the list of all available commands".freeze
+  "Type '?' or 'help' to see the list of all available commands"
 
 CREATE_HELP =
   "create station <name> - to create a Station with the name <name>\n"\
@@ -34,10 +36,10 @@ CREATE_HELP =
   "create wagon <name> - to create a Wagon with the name <name>\n"\
   "create train <name> <type> - to create a Train with the name <name>\n"\
   "    of the type <type>: 'cargo' or 'car' - for a cargo train,\n"\
-  "    'passenger' or 'pas' - for a passenger train\n".freeze
+  "    'passenger' or 'pas' - for a passenger train\n"
 
 CREATE_FORMAT_ERROR =
-  "Format error! See 'create --help' for additional info".freeze
+  "Format error! See 'create --help' for additional info"
 
 ARG_NUM_ERROR =
-  "Error! Wrong number of arguments! See '?' or 'help' for help".freeze
+  "Error! Wrong number of arguments! See '?' or 'help' for help"

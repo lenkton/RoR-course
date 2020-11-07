@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Ruby ver. 2.2.1
 class Station
   attr_reader :trains, :name
