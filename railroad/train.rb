@@ -10,8 +10,7 @@ class Train
     @speed = 0
   end
 
-  def type
-  end
+  def type; end
 
   # stops the Train
   def stop
@@ -25,7 +24,7 @@ class Train
 
   # removes one wagon, if the Train is stopped
   def remove_wagon(wagon)
-    @wagon_list << wagon if speed.zero? && wagon.type == self.type
+    @wagon_list << wagon if speed.zero? && wagon.type == type
   end
 
   def remove_last_wagon

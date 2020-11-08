@@ -26,8 +26,9 @@ class TextUI
   end
 
   protected
-  #the following methods are actually useful for derived classes:
-  #new commands could be added to the window procedure, and also
+
+  # the following methods are actually useful for derived classes:
+  # new commands could be added to the window procedure, and also
   # default messages (like 'create ...') could be rewritten
   def create_station(args)
     return puts CREATE_FORMAT_ERROR if args.empty?
@@ -87,7 +88,7 @@ class TextUI
       puts CREATE_FORMAT_ERROR
     end
   end
-  
+
   def add_station(args)
     return unless correct_form?(args, %i[station route])
 
@@ -187,9 +188,10 @@ class TextUI
   end
 
   private
-  #following methods are not supposed to be called outside the class
-  #and also are not quite suitable for reusage (however, maybe could
-  #be useful)
+
+  # following methods are not supposed to be called outside the class
+  # and also are not quite suitable for reusage (however, maybe could
+  # be useful)
 
   # checks, if a user command follows the convention
   def correct_form?(args, correct_args)
