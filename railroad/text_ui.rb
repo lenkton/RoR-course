@@ -13,6 +13,22 @@ class TextUI
     @routes = {}
   end
 
+  def run
+    @running = true
+    puts GREETINGS
+    puts HELP_REMINDER
+
+    while @running
+      print '>'
+      command = gets.split
+      run_command(command[0..-1]) unless command.empty?
+    end
+  end
+
+  protected
+  #the following methods are actually useful for derived classes:
+  #new commands could be added to the window procedure, and also
+  # default messages (like 'create ...') could be rewritten
   def create_station(args)
     return puts CREATE_FORMAT_ERROR if args.empty?
 
@@ -71,44 +87,7 @@ class TextUI
       puts CREATE_FORMAT_ERROR
     end
   end
-
-  # checks, if a user command follows the convention
-  def correct_form?(args, correct_args)
-    if args.nil? || (args.size < correct_args.size)
-      puts ARG_NUM_ERROR
-      return
-    end
-
-    (0..(correct_args.size - 1)).each do |i|
-      case correct_args[i]
-      when :train
-        unless @trains.include?(args[i])
-          puts "Error! Train #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :station
-        unless @stations.include?(args[i])
-          puts "Error! Station #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :route
-        unless @routes.include?(args[i])
-          puts "Error! Route #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :any
-
-      else
-        puts 'DEBUG ALARM! WRONG correct_form?() usage!'
-      end
-    end
-
-    true
-  end
-
+  
   def add_station(args)
     return unless correct_form?(args, %i[station route])
 
@@ -184,7 +163,7 @@ class TextUI
     end
 
     puts "Train #{args[0]} was successfully moved #{args[1]} "\
-      "to the station #{@trains[args[0]].current_station}"
+      "to the station #{@trains[args[0]].current_station.name}"
   end
 
   def run_command(command)
@@ -207,15 +186,45 @@ class TextUI
     end
   end
 
-  def run
-    @running = true
-    puts GREETINGS
-    puts HELP_REMINDER
+  private
+  #following methods are not supposed to be called outside the class
+  #and also are not quite suitable for reusage (however, maybe could
+  #be useful)
 
-    while @running
-      print '>'
-      command = gets.split
-      run_command(command[0..-1]) unless command.empty?
+  # checks, if a user command follows the convention
+  def correct_form?(args, correct_args)
+    if args.nil? || (args.size < correct_args.size)
+      puts ARG_NUM_ERROR
+      return
     end
+
+    (0..(correct_args.size - 1)).each do |i|
+      case correct_args[i]
+      when :train
+        unless @trains.include?(args[i])
+          puts "Error! Train #{args[i]} does not exist!"
+          puts HELP_REMINDER
+          return
+        end
+      when :station
+        unless @stations.include?(args[i])
+          puts "Error! Station #{args[i]} does not exist!"
+          puts HELP_REMINDER
+          return
+        end
+      when :route
+        unless @routes.include?(args[i])
+          puts "Error! Route #{args[i]} does not exist!"
+          puts HELP_REMINDER
+          return
+        end
+      when :any
+
+      else
+        puts 'DEBUG ALARM! WRONG correct_form?() usage!'
+      end
+    end
+
+    true
   end
 end
