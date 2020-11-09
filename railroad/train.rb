@@ -19,16 +19,16 @@ class Train
 
   # adds one wagon, if the Train is stopped
   def add_wagon(wagon)
-    @wagon_list << wagon if speed.zero?
+    @wagon_list << wagon if speed.zero? && wagon.type == type
   end
 
   # removes one wagon, if the Train is stopped
   def remove_wagon(wagon)
-    @wagon_list << wagon if speed.zero? && wagon.type == type
+    @wagon_list.delete(wagon) if speed.zero?
   end
 
   def remove_last_wagon
-    @wagon_list.pop
+    @wagon_list.pop if speed.zero?
   end
 
   # assigns the new route to the Train

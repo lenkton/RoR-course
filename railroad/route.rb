@@ -17,10 +17,7 @@ class Route
 
   # removes the station from the @intermediate list
   def remove_station(station)
-    if station.trains.any? { |tr| tr.route == self }
-      puts "Alarm! Alarm! Some trains at #{station} could get lost!"
-      return
-    end
+    return if station.trains.any? { |tr| tr.route == self }
 
     @intermediate.delete(station)
   end
