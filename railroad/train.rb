@@ -5,13 +5,20 @@ require_relative 'producer'
 class Train
   include Producer
 
+  public
+
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
+
+  def self.find(number)
+    @@trains.find { |tr| tr.num == number }
+  end
 
   def initialize(num)
     @wagon_list = []
     @num = num
     @speed = 0
+    @@trains << self
   end
 
   def type; end
@@ -80,4 +87,8 @@ class Train
 
     @route.stations[@route.stations.index(@current_station) + 1]
   end
+
+  private
+
+  @@trains = []
 end
