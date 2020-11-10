@@ -5,8 +5,6 @@ require_relative 'producer'
 class Train
   include Producer
 
-  public
-
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
@@ -87,8 +85,6 @@ class Train
 
     @route.stations[@route.stations.index(@current_station) + 1]
   end
-
-  private
 
   @@trains = []
 end
