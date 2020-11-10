@@ -1,80 +1,34 @@
-# Ruby ver. 2.2.1
-class Station
-  attr_reader :trains, :name
-
-  def initialize(name)
-    @name = name
-    @trains = []
-  end
-
-  def add_train(train)
-    @trains << train
-  end
-
-  # :pas - for passenger, :cargo - for cargo
-  def get_trains_by_type(type)
-    @trains.select { |tr| tr.type == type }
-  end
-
-  def send_train(train)
-    @trains.delete train
-  end
-end
-
-class Route
-  attr_reader :first, :last
-
-  def initialize(first, last)
-    @first = first
-    @last = last
-    @intermediate = []
-  end
-
-  # adds station to the route (at the position right before the end)
-  def add_station(station)
-    @intermediate << station
-  end
-
-  # removes the station from the @intermediate list
-  def remove_station(station)
-    if station.trains.any? { |tr| tr.route == self }
-      puts "Alarm! Alarm! Some trains at #{station} could get lost!"
-      return
-    end
-
-    @intermediate.delete(station)
-  end
-
-  #returns the list of all stations in the route
-  def stations
-    [first, *@intermediate, last]
-  end
-end
+# frozen_string_literal: true
 
 class Train
-  attr_reader :car_num, :current_station, :type, :num, :route
+  attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
-  def initialize(num, type, car_num)
+  def initialize(num)
+    @wagon_list = []
     @num = num
-    @type = type
-    @car_num = car_num
     @speed = 0
   end
+
+  def type; end
 
   # stops the Train
   def stop
     self.speed = 0
   end
 
-  # adds one cargo, if the Train is stopped
-  def add_car
-    @car_num += 1 if speed.zero?
+  # adds one wagon, if the Train is stopped
+  def add_wagon(wagon)
+    @wagon_list << wagon if speed.zero? && wagon.type == type
   end
 
-  # removes one cargo, if the Train is stopped
-  def rem_car
-    @car_num -= 1 if speed.zero?
+  # removes one wagon, if the Train is stopped
+  def remove_wagon(wagon)
+    @wagon_list.delete(wagon) if speed.zero?
+  end
+
+  def remove_last_wagon
+    @wagon_list.pop if speed.zero?
   end
 
   # assigns the new route to the Train
@@ -82,7 +36,7 @@ class Train
   # (also, deletes the Train from the previous Station trains list
   # and adds to the new Station's list)
   def route=(route)
-    @current_station.send_train(self) unless @current_station
+    @current_station&.send_train(self)
 
     @route = route
     @current_station = route.first
