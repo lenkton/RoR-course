@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'producer'
+require_relative 'instance_counter'
 
 class Train
   include Producer
+  include InstanceCounter
 
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
@@ -17,6 +19,7 @@ class Train
     @num = num
     @speed = 0
     @@trains << self
+    register_instance
   end
 
   def type; end

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'instance_counter'
+
 class Route
+  include InstanceCounter
+
   attr_reader :first, :last, :number
 
   def initialize(first, last, number)
@@ -8,6 +12,7 @@ class Route
     @last = last
     @intermediate = []
     @number = number
+    register_instance
   end
 
   # adds station to the route (at the position right before the end)
