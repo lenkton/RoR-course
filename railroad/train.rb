@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'producer'
+
 class Train
+  include Producer
+
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
