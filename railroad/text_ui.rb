@@ -60,7 +60,7 @@ class TextUI
   end
 
   def create_train(args)
-    #todo: create catch statement in the body of the text ui
+    # TODO: create catch statement in the body of the text ui
     raise "Wrong number of arguments to 'create'" if args.size != 2
 
     name, type = args
@@ -75,7 +75,7 @@ class TextUI
       @trains[name] = PassengerTrain.new(name)
       puts "Passenger Train #{name} created successfully"
     else
-      raise "Wrong type of a train"
+      raise 'Wrong type of a train'
     end
   end
 
