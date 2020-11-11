@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 
+require_relative 'instance_counter'
+
 # Ruby ver. 2.2.1
 class Station
+  include InstanceCounter
+
   attr_reader :trains, :name
+
+  def self.all
+    @@stations
+  end
 
   def initialize(name)
     @name = name
     @trains = []
+    @@stations << self
+    register_instance
   end
 
   def add_train(train)
@@ -21,4 +31,6 @@ class Station
   def send_train(train)
     @trains.delete train
   end
+
+  @@stations = []
 end

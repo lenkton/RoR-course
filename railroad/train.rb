@@ -1,13 +1,25 @@
 # frozen_string_literal: true
 
+require_relative 'producer'
+require_relative 'instance_counter'
+
 class Train
+  include Producer
+  include InstanceCounter
+
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
+
+  def self.find(number)
+    @@trains.find { |tr| tr.num == number }
+  end
 
   def initialize(num)
     @wagon_list = []
     @num = num
     @speed = 0
+    @@trains << self
+    register_instance
   end
 
   def type; end
@@ -76,4 +88,6 @@ class Train
 
     @route.stations[@route.stations.index(@current_station) + 1]
   end
+
+  @@trains = []
 end

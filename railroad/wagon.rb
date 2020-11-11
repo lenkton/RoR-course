@@ -1,3 +1,7 @@
 # frozen_string_literal: true
 
-class Wagon; end
+require_relative 'producer'
+
+class Wagon
+  include Producer
+end
