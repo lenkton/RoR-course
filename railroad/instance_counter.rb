@@ -2,22 +2,23 @@ module InstanceCounter
   def self.included(base)
     base.extend ClassMethods
     base.send :include, InstanceMethods
-    base.send(:instances=, 0)
   end
 
   module ClassMethods
-    attr_reader :instances
+    def instances
+      @instances ||= 0
+    end
 
-    private
-
-    attr_writer :instances
+    def increase_instance_count
+      @instances = instances + 1
+    end
   end
 
   module InstanceMethods
     private
 
     def register_instance
-      self.class.send(:instances=, self.class.instances + 1)
+      self.class.increase_instance_count
     end
   end
 end
