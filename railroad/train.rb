@@ -17,7 +17,7 @@ class Train
   def valid?
     validate!(@num)
     true
-  rescue StandardError
+  rescue RuntimeError
     false
   end
 
