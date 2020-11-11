@@ -21,7 +21,11 @@ class TextUI
     while @running
       print '>'
       command = gets.split
-      run_command(command[0..-1]) unless command.empty?
+      begin
+        run_command(command[0..-1]) unless command.empty?
+      rescue RuntimeError => e
+        puts e.message
+      end
     end
   end
 
@@ -56,11 +60,12 @@ class TextUI
   end
 
   def create_train(args)
-    return puts CREATE_FORMAT_ERROR if args.size != 2
+    #todo: create catch statement in the body of the text ui
+    raise "Wrong number of arguments to 'create'" if args.size != 2
 
     name, type = args
 
-    return puts "The Train #{name} already exists!" if @trains.include?(name)
+    raise "The Train #{name} already exists!" if @trains.include?(name)
 
     case type
     when 'cargo', 'car'
@@ -70,12 +75,12 @@ class TextUI
       @trains[name] = PassengerTrain.new(name)
       puts "Passenger Train #{name} created successfully"
     else
-      puts CREATE_FORMAT_ERROR
+      raise "Wrong type of a train"
     end
   end
 
   def create_object(command)
-    return puts CREATE_FORMAT_ERROR if command.empty?
+    raise "Missing arguments for 'create'" if command.empty?
 
     args = command[1..-1]
 
@@ -85,7 +90,7 @@ class TextUI
     when 'route' then create_route(args)
     when 'train' then create_train(args)
     else
-      puts CREATE_FORMAT_ERROR
+      raise "Wrong arguments for 'create'"
     end
   end
 
