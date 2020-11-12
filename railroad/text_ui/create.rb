@@ -1,4 +1,8 @@
 require_relative 'form_checker'
+require './core/cargo_train'
+require './core/passenger_train'
+require './core/station'
+require './core/route'
 
 module Create
   include FormChecker
@@ -20,7 +24,7 @@ module Create
       raise "Wrong arguments for 'create'"
     end
   end
-  
+
   def create_station(args)
     raise "Missing arguments for 'create station'" if args.empty?
 
@@ -37,9 +41,7 @@ module Create
 
     name, first, last = args
 
-    if @routes.include?(name)
-      raise "The Route #{name} already exists!"
-    end
+    raise "The Route #{name} already exists!" if @routes.include?(name)
 
     @routes[name] = Route.new(@stations[first], @stations[last], name)
     puts "The Route #{name} from #{first} to #{last} created successfully"
@@ -64,4 +66,3 @@ module Create
     end
   end
 end
-

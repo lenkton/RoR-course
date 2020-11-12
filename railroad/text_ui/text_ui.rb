@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'cargo_train'
-require_relative 'passenger_train'
-require_relative 'station'
-require_relative 'route'
 require_relative 'text'
-require_relative 'create.rb'
+require './core/cargo_train'
+require './core/passenger_train'
+require './core/station'
+require './core/route'
+require_relative 'create'
 require_relative 'form_checker'
-
 
 class TextUI
   include Create
@@ -63,7 +62,7 @@ class TextUI
     when :CargoTrain
       @trains[args[0]].add_wagon(CargoWagon.new)
     else
-      raise TypeError.new("Wrong class of train #{args[0]}"
+      raise TypeError, "Wrong class of train #{args[0]}"
     end
 
     puts "A wagon was successfully added to the Train #{args[0]}"
@@ -102,9 +101,7 @@ class TextUI
   def move(args)
     check_form!(args, %i[train any])
 
-    unless @trains[args[0]].route
-      raise "The train #{args[0]} has no Route assigned!"
-    end
+    raise "The train #{args[0]} has no Route assigned!" unless @trains[args[0]].route
 
     case args[1]
     when 'forward' then @trains[args[0]].move_forward
@@ -136,4 +133,3 @@ class TextUI
     end
   end
 end
-

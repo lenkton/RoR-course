@@ -1,5 +1,6 @@
-module FormChecker
+require_relative 'text'
 
+module FormChecker
   private
 
   # following methods are not supposed to be called outside the class
@@ -8,30 +9,21 @@ module FormChecker
 
   # checks, if a user command follows the convention
   def check_form!(args, correct_args)
-    if args.nil? || (args.size < correct_args.size)
-      raise ARG_NUM_ERROR
-    end
+    raise ARG_NUM_ERROR if args.nil? || (args.size < correct_args.size)
 
     (0..(correct_args.size - 1)).each do |i|
       case correct_args[i]
       when :train
-        unless @trains.include?(args[i])
-          raise "Train #{args[i]} does not exist"
-        end
+        raise "Train #{args[i]} does not exist" unless @trains.include?(args[i])
       when :station
-        unless @stations.include?(args[i])
-          raise "Station #{args[i]} does not exist"
-        end
+        raise "Station #{args[i]} does not exist" unless @stations.include?(args[i])
       when :route
-        unless @routes.include?(args[i])
-          raise "Route #{args[i]} does not exist"
-        end
+        raise "Route #{args[i]} does not exist" unless @routes.include?(args[i])
       when :any
 
       else
-        raise ArgumentError.new("Wrong correct_args in correct_form!()")
+        raise ArgumentError, 'Wrong correct_args in correct_form!()'
       end
     end
   end
 end
-
