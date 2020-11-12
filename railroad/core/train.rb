@@ -16,8 +16,7 @@ class Train
 
   def valid?
     validate!(@num)
-    true
-  rescue RuntimeError
+  rescue StandardError
     false
   end
 
@@ -102,6 +101,8 @@ class Train
   @@trains = []
 
   def validate!(num)
+    raise 'Number of train cannot be nil' if num.nil?
     raise 'Incorrect train number format' if /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i !~ num
+    raise 'Basic Train cannot be instantiated' if type.nil?
   end
 end
