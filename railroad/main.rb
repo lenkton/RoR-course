@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'text_ui'
+require './text_ui/text_ui'
 
 TextUI.new.run

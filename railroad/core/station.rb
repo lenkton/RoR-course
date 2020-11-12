@@ -8,12 +8,20 @@ class Station
 
   attr_reader :trains, :name
 
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
+  end
+
   def self.all
     @@stations
   end
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@stations << self
     register_instance
@@ -30,6 +38,12 @@ class Station
 
   def send_train(train)
     @trains.delete train
+  end
+
+  private
+
+  def validate!
+    raise 'The name of a Station cannot be nil' if @name.nil?
   end
 
   @@stations = []

@@ -14,7 +14,15 @@ class Train
     @@trains.find { |tr| tr.num == number }
   end
 
+  def valid?
+    validate!(@num)
+    true
+  rescue StandardError
+    false
+  end
+
   def initialize(num)
+    validate!(num)
     @wagon_list = []
     @num = num
     @speed = 0
@@ -89,5 +97,13 @@ class Train
     @route.stations[@route.stations.index(@current_station) + 1]
   end
 
+  private
+
   @@trains = []
+
+  def validate!(num)
+    raise 'Number of train cannot be nil' if num.nil?
+    raise 'Incorrect train number format' if /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i !~ num
+    raise 'Basic Train cannot be instantiated' if type.nil?
+  end
 end
