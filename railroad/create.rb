@@ -1,4 +1,8 @@
+require_relative 'form_checker'
+
 module Create
+  include FormChecker
+
   # made protected to allow overriding
   protected
 
@@ -18,24 +22,23 @@ module Create
   end
   
   def create_station(args)
-    return puts CREATE_FORMAT_ERROR if args.empty?
+    raise "Missing arguments for 'create station'" if args.empty?
 
     name = args[0]
 
-    return puts "Station #{name} already exists!" if @stations.include?(name)
+    raise "Station #{name} already exists!" if @stations.include?(name)
 
     @stations[name] = Station.new(name)
     puts "Station #{name} created successfully"
   end
 
   def create_route(args)
-    return unless correct_form?(args, %i[any station station])
+    check_form!(args, %i[any station station])
 
     name, first, last = args
 
     if @routes.include?(name)
-      puts "The Route #{name} already exists!"
-      return
+      raise "The Route #{name} already exists!"
     end
 
     @routes[name] = Route.new(@stations[first], @stations[last], name)
@@ -43,7 +46,6 @@ module Create
   end
 
   def create_train(args)
-    # TODO: create catch statement in the body of the text ui
     raise "Wrong number of arguments to 'create'" if args.size != 2
 
     name, type = args
@@ -62,3 +64,4 @@ module Create
     end
   end
 end
+

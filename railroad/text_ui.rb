@@ -6,9 +6,12 @@ require_relative 'station'
 require_relative 'route'
 require_relative 'text'
 require_relative 'create.rb'
+require_relative 'form_checker'
+
 
 class TextUI
   include Create
+  include FormChecker
 
   def initialize
     @stations = {}
@@ -38,34 +41,36 @@ class TextUI
   # new commands could be added to the window procedure, and also
   # default messages (like 'create ...') could be rewritten
   def add_station(args)
-    return unless correct_form?(args, %i[station route])
+    check_form!(args, %i[station route])
 
     @routes[args[1]].add_station(@stations[args[0]])
     puts "Station #{args[0]} was successfully added to the Route #{args[1]}"
   end
 
   def remove_station(args)
-    return unless correct_form?(args, %i[station route])
+    check_form!(args, %i[station route])
 
     @routes[args[1]].remove_station(@stations[args[0]])
     puts "Station #{args[0]} was successfully removed from the Route #{args[1]}"
   end
 
   def add_wagon(args)
-    return unless correct_form?(args, [:train])
+    check_form!(args, [:train])
 
     case @trains[args[0]].class
     when :PassengerTrain
       @trains[args[0]].add_wagon(PassengerWagon.new)
     when :CargoTrain
       @trains[args[0]].add_wagon(CargoWagon.new)
+    else
+      raise TypeError.new("Wrong class of train #{args[0]}"
     end
 
     puts "A wagon was successfully added to the Train #{args[0]}"
   end
 
   def remove_wagon(args)
-    return unless correct_form?(args, [:train])
+    check_form!(args, [:train])
 
     @trains[args[0]].remove_last_wagon
     puts "A wagon was successfully removed from the Train #{args[0]}"
@@ -79,14 +84,14 @@ class TextUI
   end
 
   def assign(args)
-    return unless correct_form?(args, %i[route train])
+    check_form!(args, %i[route train])
 
     @trains[args[1]].route = @routes[args[0]]
     puts "The Route #{args[0]} was successfully assigned to the Train #{args[1]}"
   end
 
   def trains(args)
-    return unless correct_form?(args, [:station])
+    check_form!(args, [:station])
 
     puts "At the moment these Trains are at the Station #{args[0]}:"
     @stations[args[0]].trains.each do |tr|
@@ -95,20 +100,17 @@ class TextUI
   end
 
   def move(args)
-    return unless correct_form?(args, %i[train any])
+    check_form!(args, %i[train any])
 
     unless @trains[args[0]].route
-      puts "The train #{args[0]} has no Route assigned!"
-      return
+      raise "The train #{args[0]} has no Route assigned!"
     end
 
     case args[1]
     when 'forward' then @trains[args[0]].move_forward
     when 'back' then @trains[args[0]].move_backward
     else
-      puts 'Error: wrong syntax. Trains could move only back and forward.'
-      puts HELP_REMINDER
-      return
+      raise 'Wrong direction. Trains could move only back and forward.'
     end
 
     puts "Train #{args[0]} was successfully moved #{args[1]} "\
@@ -130,51 +132,8 @@ class TextUI
     when 'trains' then trains(args)
     when 'move' then move(args)
     else
-      puts "There is no command '#{command[0]}'"
-      puts HELP_REMINDER
+      raise "There is no command '#{command[0]}'"
     end
-  end
-
-  private
-
-  # following methods are not supposed to be called outside the class
-  # and also are not quite suitable for reusage (however, maybe could
-  # be useful)
-
-  # checks, if a user command follows the convention
-  def correct_form?(args, correct_args)
-    if args.nil? || (args.size < correct_args.size)
-      puts ARG_NUM_ERROR
-      return
-    end
-
-    (0..(correct_args.size - 1)).each do |i|
-      case correct_args[i]
-      when :train
-        unless @trains.include?(args[i])
-          puts "Error! Train #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :station
-        unless @stations.include?(args[i])
-          puts "Error! Station #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :route
-        unless @routes.include?(args[i])
-          puts "Error! Route #{args[i]} does not exist!"
-          puts HELP_REMINDER
-          return
-        end
-      when :any
-
-      else
-        puts 'DEBUG ALARM! WRONG correct_form?() usage!'
-      end
-    end
-
-    true
   end
 end
+
