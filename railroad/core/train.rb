@@ -10,6 +10,10 @@ class Train
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
+  def on_wagons(&block)
+    @wagon_list.each { |tr| yield(tr) }
+  end
+
   def self.find(number)
     @@trains.find { |tr| tr.num == number }
   end
