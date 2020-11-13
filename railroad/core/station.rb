@@ -8,6 +8,10 @@ class Station
 
   attr_reader :trains, :name
 
+  def on_trains(&block)
+    @trains.each { |tr| yield(tr) }
+    end
+
   def valid?
     validate!
     true

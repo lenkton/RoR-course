@@ -3,7 +3,28 @@
 require_relative 'wagon'
 
 class PassengerWagon < Wagon
+  attr_reader :seats_available
+
+  def initialize(seats)
+    if seats.class != :Fixnum || seats.class != :Bignum
+      raise "Seats should be of type Fixnum (or Bignum)"
+    end
+
+    @seats_total = seats
+    @seats_available = seats
+  end
+
+  def take_seat
+    raise "No available seats"  if @seats_available == 0
+    @seats_available -= 1
+  end
+
+  def seats_taken
+    @seats_total - @seats_available
+  end
+
   def type
     :passenger
   end
 end
+
