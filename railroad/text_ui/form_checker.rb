@@ -19,6 +19,8 @@ module FormChecker
         raise "Station #{args[i]} does not exist" unless @stations.include?(args[i])
       when :route
         raise "Route #{args[i]} does not exist" unless @routes.include?(args[i])
+      when :wagon
+        raise "Wagon #{args[i]} does not exist" unless @wagons.include?(args[i])
       when :any
 
       else

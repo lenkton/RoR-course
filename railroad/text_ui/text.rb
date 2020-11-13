@@ -5,7 +5,8 @@ HELP =
   "q or quit - close the program\n"\
   "add-station <station> <route> - add the Station with the name <station>\n"\
   "               to the Route with the number <route>\n"\
-  "add-wagon <train> - add a Wagon to the Train with the name <train>\n"\
+  "add-wagon <train> <capacity> - add a Wagon (of the appropriate type) to the Train with the name <train> and max capacity <capacity>\n"\
+  "require <wagon> <capacity> - in the wagon with the number <wagon> make <capacity> occupied\n"\
   "assign <route> <train> - assign the Route with the number <route>\n"\
   "               to the Train with the number <train>\n"\
   "create <...> - create station/route/train\n"\
@@ -19,7 +20,7 @@ HELP =
   "stations - show the list of all created stations\n"\
   "trains <station> - show the list of created Trains,\n"\
   "               which are now at the Station with the name <station>\n"\
-  ''
+  'take-seat <wagon> - occupy one seat in the PassengerWagon with the number <wagon>\n'
 
 GREETINGS =
   'Welcome to Railway Management Client!'
@@ -33,7 +34,6 @@ CREATE_HELP =
   "  - to create the Route which starts at the station with\n"\
   "    the name <first_station_name> and finishes at the station\n"\
   "    with the name <last_station_name>\n"\
-  "create wagon <name> - to create a Wagon with the name <name>\n"\
   "create train <name> <type> - to create a Train with the name <name>\n"\
   "    of the type <type>: 'cargo' or 'car' - for a cargo train,\n"\
   "    'passenger' or 'pas' - for a passenger train\n"

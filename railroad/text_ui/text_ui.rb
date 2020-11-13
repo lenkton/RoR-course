@@ -16,6 +16,7 @@ class TextUI
     @stations = {}
     @trains = {}
     @routes = {}
+    @wagons = {}
   end
 
   def run
@@ -54,18 +55,28 @@ class TextUI
   end
 
   def add_wagon(args)
-    check_form!(args, [:train])
+    check_form!(args, [:train, :any, :any])
+
+    if @wagons.include?(args[1])
+      raise "A wagon with the name #{args[1]} already exist"
+    end
+
+    num = args[2].to_i
 
     case @trains[args[0]].class
     when :PassengerTrain
-      @trains[args[0]].add_wagon(PassengerWagon.new)
+      wagon = PassengerWagon.new(num)
+      @trains[args[0]].add_wagon(wagon)
     when :CargoTrain
-      @trains[args[0]].add_wagon(CargoWagon.new)
+      wagon = CargoWagon.new(num)
+      @trains[args[0]].add_wagon(wagon)
     else
       raise TypeError, "Wrong class of train #{args[0]}"
     end
 
-    puts "A wagon was successfully added to the Train #{args[0]}"
+    @wagons[args[1]] << wagon
+
+    puts "A #{wagon.class} was successfully added to the Train #{args[0]}"
   end
 
   def remove_wagon(args)
@@ -114,6 +125,19 @@ class TextUI
       "to the station #{@trains[args[0]].current_station.name}"
   end
 
+  def occupy(args)
+    check_form!(args, [:train, :any])
+
+    @trains[args[0]].occupy(args[1])
+    pust "Wagon is successfully filled with the stuff"
+  end
+
+  def take_seat(args)
+    check_form!(args, [:train, :any])
+
+    @trains[args[0]].take_seat
+  end
+
   def run_command(command)
     args = command [1..-1]
     case command[0]
@@ -128,6 +152,8 @@ class TextUI
     when 'assign' then assign(args)
     when 'trains' then trains(args)
     when 'move' then move(args)
+    when 'require' then occupy(args)
+    when 'take-seat' then take_seat(args)
     else
       raise "There is no command '#{command[0]}'"
     end
