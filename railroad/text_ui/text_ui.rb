@@ -55,11 +55,9 @@ class TextUI
   end
 
   def add_wagon(args)
-    check_form!(args, [:train, :any, :any])
+    check_form!(args, %i[train any any])
 
-    if @wagons.include?(args[1])
-      raise "A wagon with the name #{args[1]} already exist"
-    end
+    raise "A wagon with the name #{args[1]} already exist" if @wagons.include?(args[1])
 
     num = args[2].to_i
 
@@ -88,9 +86,9 @@ class TextUI
 
   def stations
     puts 'At the moment these stations were created:'
-    @stations.each do |name, _st|
+    @stations.each do |_name, _st|
       _st.on_trains do |tr|
-        puts tr.num, tr.type, wagon_list.size()
+        puts tr.num, tr.type, wagon_list.size
       end
     end
   end
@@ -118,7 +116,7 @@ class TextUI
           puts "Occupied capacity: #{w.occupied}"
         else raise "Wrong type of the Train #{w.num}"
         end
-      end 
+      end
     end
   end
 
@@ -139,14 +137,14 @@ class TextUI
   end
 
   def occupy(args)
-    check_form!(args, [:train, :any])
+    check_form!(args, %i[train any])
 
     @trains[args[0]].occupy(args[1])
-    pust "Wagon is successfully filled with the stuff"
+    pust 'Wagon is successfully filled with the stuff'
   end
 
   def take_seat(args)
-    check_form!(args, [:train, :any])
+    check_form!(args, %i[train any])
 
     @trains[args[0]].take_seat
   end
