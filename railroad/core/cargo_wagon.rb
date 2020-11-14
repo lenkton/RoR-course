@@ -5,9 +5,10 @@ require_relative 'wagon'
 class CargoWagon < Wagon
   attr_reader :available
 
-  def initialize(v)
-    raise 'CargoWagon caparcity should be an integer' if (v.class != :Fixnum) || (v.class != :Bignum)
+  def initialize(num, v)
+    raise 'CargoWagon caparcity should be an integer' unless v.is_a?(Integer) || v.is_a?(Integer)
 
+    super(num)
     @capacity = v
     @available = v
   end

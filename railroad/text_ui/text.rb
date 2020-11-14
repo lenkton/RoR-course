@@ -21,7 +21,7 @@ HELP =
   "stations - show the list of all created stations\n"\
   "trains <station> - show the list of created Trains,\n"\
   "               which are now at the Station with the name <station>\n"\
-  'take-seat <wagon> - occupy one seat in the PassengerWagon with the number <wagon>\n'\
+  "take-seat <wagon> - occupy one seat in the PassengerWagon with the number <wagon>\n"\
   "wagons <train> - show the list of the wagons, attached to the <train>\n"
 
 GREETINGS =

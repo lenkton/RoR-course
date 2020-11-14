@@ -61,18 +61,18 @@ class TextUI
 
     num = args[2].to_i
 
-    case @trains[args[0]].class
-    when :PassengerTrain
-      wagon = PassengerWagon.new(num)
+    case @trains[args[0]].type
+    when :passenger
+      wagon = PassengerWagon.new(args[1], num)
       @trains[args[0]].add_wagon(wagon)
-    when :CargoTrain
-      wagon = CargoWagon.new(num)
+    when :cargo
+      wagon = CargoWagon.new(args[1], num)
       @trains[args[0]].add_wagon(wagon)
     else
       raise TypeError, "Wrong class of train #{args[0]}"
     end
 
-    @wagons[args[1]] << wagon
+    @wagons[args[1]] = wagon
 
     puts "A #{wagon.class} was successfully added to the Train #{args[0]}"
   end
@@ -142,16 +142,21 @@ class TextUI
   end
 
   def occupy(args)
-    check_form!(args, %i[train any])
+    check_form!(args, %i[wagon any])
 
-    @trains[args[0]].occupy(args[1])
-    pust 'Wagon is successfully filled with the stuff'
+    raise "Only CargoWagons could be 'occupied'" if @wagons[args[0]].type != :cargo
+
+    @wagons[args[0]].occupy(args[1].to_i)
+    puts "Wagon #{args[0]} is successfully filled with the stuff"
   end
 
   def take_seat(args)
-    check_form!(args, %i[train any])
+    check_form!(args, [:wagon])
 
-    @trains[args[0]].take_seat
+    raise 'Seats could be taken only in PassengerWagons' if @wagons[args[0]].type != :passenger
+
+    @wagons[args[0]].take_seat
+    puts "A seat in the PassengerWagon #{args[0]} has been taken"
   end
 
   def run_command(command)
