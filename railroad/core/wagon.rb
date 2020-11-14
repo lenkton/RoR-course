@@ -2,6 +2,7 @@
 
 require_relative 'producer'
 
+# General Wagon class
 class Wagon
   include Producer
 

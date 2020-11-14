@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require_relative 'form_checker'
 require './core/cargo_train'
 require './core/passenger_train'
 require './core/station'
 require './core/route'
 
+# handles 'create' command
 module Create
   include FormChecker
 
@@ -38,7 +41,6 @@ module Create
 
   def create_route(args)
     check_form!(args, %i[any station station])
-
     name, first, last = args
 
     raise "The Route #{name} already exists!" if @routes.include?(name)
@@ -48,21 +50,15 @@ module Create
   end
 
   def create_train(args)
-    raise "Wrong number of arguments to 'create'" if args.size != 2
+    check_form!(args, %i[any any])
+    raise "The Train #{args[0]} already exists!" if @trains.include?(args[0])
 
     name, type = args
-
-    raise "The Train #{name} already exists!" if @trains.include?(name)
-
     case type
-    when 'cargo', 'car'
-      @trains[name] = CargoTrain.new(name)
-      puts "Cargo Train #{name} created successfully"
-    when 'passenger', 'p'
-      @trains[name] = PassengerTrain.new(name)
-      puts "Passenger Train #{name} created successfully"
-    else
-      raise 'Wrong type of a train'
+    when 'cargo', 'car' then @trains[name] = CargoTrain.new(name)
+    when 'passenger', 'p' then @trains[name] = PassengerTrain.new(name)
+    else raise 'Wrong type of a train'
     end
+    puts "#{@trains[name].class} #{name} created successfully"
   end
 end

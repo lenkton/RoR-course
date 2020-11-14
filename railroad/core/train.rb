@@ -3,6 +3,7 @@
 require_relative 'producer'
 require_relative 'instance_counter'
 
+# Train class
 class Train
   include Producer
   include InstanceCounter
@@ -10,8 +11,8 @@ class Train
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
-  def on_wagons
-    @wagon_list.each { |tr| yield(tr) }
+  def on_wagons(&block)
+    @wagon_list.each(&block)
   end
 
   def self.find(number)

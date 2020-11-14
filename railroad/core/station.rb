@@ -2,14 +2,14 @@
 
 require_relative 'instance_counter'
 
-# Ruby ver. 2.2.1
+# Station class
 class Station
   include InstanceCounter
 
   attr_reader :trains, :name
 
-  def on_trains
-    @trains.each { |tr| yield(tr) }
+  def on_trains(&block)
+    @trains.each(&block)
   end
 
   def valid?

@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
+# InstanceCounter module
 module InstanceCounter
   def self.included(base)
     base.extend ClassMethods
     base.send :include, InstanceMethods
   end
 
+  # methods to include in a class
   module ClassMethods
     def instances
       @instances ||= 0
@@ -14,6 +18,7 @@ module InstanceCounter
     end
   end
 
+  # methods to extend a class
   module InstanceMethods
     private
 

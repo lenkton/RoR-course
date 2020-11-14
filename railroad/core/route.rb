@@ -3,6 +3,7 @@
 require_relative 'instance_counter'
 require_relative 'station'
 
+# Route class
 class Route
   include InstanceCounter
 

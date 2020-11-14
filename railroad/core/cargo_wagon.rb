@@ -2,21 +2,22 @@
 
 require_relative 'wagon'
 
+# CargoWagon class
 class CargoWagon < Wagon
   attr_reader :available
 
-  def initialize(num, v)
-    raise 'CargoWagon caparcity should be an integer' unless v.is_a?(Integer) || v.is_a?(Integer)
+  def initialize(num, total_capacity)
+    raise 'CargoWagon caparcity should be an integer' unless total_capacity.is_a?(Integer)
 
     super(num)
-    @capacity = v
-    @available = v
+    @capacity = total_capacity
+    @available = total_capacity
   end
 
-  def occupy(v)
-    raise 'Volume exceeds available capacity' if v > @available
+  def occupy(capacity)
+    raise 'Volume exceeds available capacity' if capacity > @available
 
-    @available -= v
+    @available -= capacity
   end
 
   def occupied

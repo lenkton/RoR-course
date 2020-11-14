@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'text'
 
+# checks the form of a query
 module FormChecker
   private
 
@@ -7,25 +10,46 @@ module FormChecker
   # and also are not quite suitable for reusage (however, maybe could
   # be useful)
 
+  def array_of(type)
+    arrays = {
+      train: @trains,
+      station: @stations,
+      route: @routes,
+      wagon: @wagons
+    }
+
+    arrays[type]
+  end
+
+  def class_name_of(type)
+    names = {
+      train: "Train",
+      station: "Station",
+      route: "Route",
+      wagon: "Wagon"
+    }
+
+    names[type]
+  end
+
+  def check_arg(arg, correct_arg)
+    return if correct_arg == :any
+
+    if class_name_of(correct_arg).nil?
+      raise ArgumentError, 'Wrong correct_args in correct_form!()'
+    end
+
+    unless array_of(correct_arg).include?(arg)
+      raise "#{class_name_of(correct_arg)} #{arg} does not exist"
+    end
+  end
+
   # checks, if a user command follows the convention
   def check_form!(args, correct_args)
     raise ARG_NUM_ERROR if args.nil? || (args.size < correct_args.size)
 
     (0..(correct_args.size - 1)).each do |i|
-      case correct_args[i]
-      when :train
-        raise "Train #{args[i]} does not exist" unless @trains.include?(args[i])
-      when :station
-        raise "Station #{args[i]} does not exist" unless @stations.include?(args[i])
-      when :route
-        raise "Route #{args[i]} does not exist" unless @routes.include?(args[i])
-      when :wagon
-        raise "Wagon #{args[i]} does not exist" unless @wagons.include?(args[i])
-      when :any
-
-      else
-        raise ArgumentError, 'Wrong correct_args in correct_form!()'
-      end
+      check_arg(args[i], correct_args[i])
     end
   end
 end
