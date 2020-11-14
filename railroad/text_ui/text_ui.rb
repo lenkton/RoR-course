@@ -103,7 +103,7 @@ class TextUI
 
     puts "At the moment these Trains are at the Station #{args[0]}:"
     @stations[args[0]].on_trains do |tr|
-      puts tr.name, tr.type, tr.wagon_list.size
+      puts tr.num, tr.type, tr.wagon_list.size
     end
   end
 
