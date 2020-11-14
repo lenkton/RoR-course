@@ -5,8 +5,8 @@ HELP =
   "q or quit - close the program\n"\
   "add-station <station> <route> - add the Station with the name <station>\n"\
   "               to the Route with the number <route>\n"\
-  "add-wagon <train> <capacity> - add a Wagon (of the appropriate type)\n"\
-  "               to the Train with the name <train> and max capacity <capacity>\n"\
+  "add-wagon <train> <number> <capacity> - add a Wagon (of the appropriate type)\n"\
+  "               to the Train <train> with the number <number> and max capacity <capacity>\n"\
   "require <wagon> <capacity> - in the wagon with the number <wagon> make <capacity> occupied\n"\
   "assign <route> <train> - assign the Route with the number <route>\n"\
   "               to the Train with the number <train>\n"\
