@@ -89,7 +89,9 @@ class TextUI
   def stations
     puts 'At the moment these stations were created:'
     @stations.each do |name, _st|
-      puts name
+      _st.on_trains do |tr|
+        puts tr.num, tr.type, wagon_list.size()
+      end
     end
   end
 
@@ -105,7 +107,18 @@ class TextUI
 
     puts "At the moment these Trains are at the Station #{args[0]}:"
     @stations[args[0]].trains.each do |tr|
-      puts tr.num
+      tr.on_wagons do |w|
+        puts w.num, w.type
+        case w.type
+        when :passenger
+          puts "Seats available: #{w.seats_available}"
+          puts "Seats taken: #{w.seats_taken}"
+        when :cargo
+          puts "Available capacity: #{w.available}"
+          puts "Occupied capacity: #{w.occupied}"
+        else raise "Wrong type of the Train #{w.num}"
+        end
+      end 
     end
   end
 
