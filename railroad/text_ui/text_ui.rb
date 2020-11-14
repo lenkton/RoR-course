@@ -9,6 +9,7 @@ require_relative 'create'
 require_relative 'form_checker'
 require_relative 'commands'
 
+# the main class
 class TextUI
   include Create
   include FormChecker
@@ -23,8 +24,7 @@ class TextUI
 
   def run
     @running = true
-    puts GREETINGS
-    puts HELP_REMINDER
+    puts GREETINGS, HELP_REMINDER
 
     while @running
       print '>'

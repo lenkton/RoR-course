@@ -25,7 +25,7 @@ HELP =
   "wagons <train> - show the list of the wagons, attached to the <train>\n"
 
 GREETINGS =
-  'Welcome to Railway Management Client!'
+  "Welcome to Railway Management Client!\n"
 
 HELP_REMINDER =
   "Type '?' or 'help' to see the list of all available commands"
