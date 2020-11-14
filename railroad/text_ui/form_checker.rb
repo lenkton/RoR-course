@@ -23,10 +23,10 @@ module FormChecker
 
   def class_name_of(type)
     names = {
-      train: "Train",
-      station: "Station",
-      route: "Route",
-      wagon: "Wagon"
+      train: 'Train',
+      station: 'Station',
+      route: 'Route',
+      wagon: 'Wagon'
     }
 
     names[type]
@@ -35,13 +35,9 @@ module FormChecker
   def check_arg(arg, correct_arg)
     return if correct_arg == :any
 
-    if class_name_of(correct_arg).nil?
-      raise ArgumentError, 'Wrong correct_args in correct_form!()'
-    end
+    raise ArgumentError, 'Wrong correct_args in correct_form!()' if class_name_of(correct_arg).nil?
 
-    unless array_of(correct_arg).include?(arg)
-      raise "#{class_name_of(correct_arg)} #{arg} does not exist"
-    end
+    raise "#{class_name_of(correct_arg)} #{arg} does not exist" unless array_of(correct_arg).include?(arg)
   end
 
   # checks, if a user command follows the convention
