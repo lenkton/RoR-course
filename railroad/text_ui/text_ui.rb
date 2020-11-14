@@ -87,9 +87,7 @@ class TextUI
   def stations
     puts 'At the moment these stations were created:'
     @stations.each do |_name, _st|
-      _st.on_trains do |tr|
-        puts tr.num, tr.type, wagon_list.size
-      end
+      puts _name
     end
   end
 
@@ -104,18 +102,25 @@ class TextUI
     check_form!(args, [:station])
 
     puts "At the moment these Trains are at the Station #{args[0]}:"
-    @stations[args[0]].trains.each do |tr|
-      tr.on_wagons do |w|
-        puts w.num, w.type
-        case w.type
-        when :passenger
-          puts "Seats available: #{w.seats_available}"
-          puts "Seats taken: #{w.seats_taken}"
-        when :cargo
-          puts "Available capacity: #{w.available}"
-          puts "Occupied capacity: #{w.occupied}"
-        else raise "Wrong type of the Train #{w.num}"
-        end
+    @stations[args[0]].on_trains do |tr|
+      puts tr.name, tr.type, tr.wagon_list.size
+    end
+  end
+
+  def wagons(args)
+    check_form!(args, [:train])
+
+    puts "At the moment the Train #{args[0]} has the following Wagons attached:"
+    @trains[args[0]].on_wagons do |w|
+      puts w.num, w.type
+      case w.type
+      when :passenger
+        puts "Seats available: #{w.seats_available}"
+        puts "Seats taken: #{w.seats_taken}"
+      when :cargo
+        puts "Available capacity: #{w.available}"
+        puts "Occupied capacity: #{w.occupied}"
+      else raise "Wrong type of the Train #{w.num}"
       end
     end
   end
@@ -165,6 +170,7 @@ class TextUI
     when 'move' then move(args)
     when 'require' then occupy(args)
     when 'take-seat' then take_seat(args)
+    when 'wagons' then wagons(args)
     else
       raise "There is no command '#{command[0]}'"
     end

@@ -5,7 +5,10 @@ require_relative 'producer'
 class Wagon
   include Producer
 
-  def initialize
+  attr_reader :num
+
+  def initialize(num)
+    @num = num
     validate!
   end
 
