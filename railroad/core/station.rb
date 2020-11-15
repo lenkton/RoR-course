@@ -9,8 +9,8 @@ class Station
 
   attr_reader :trains, :name
 
-  def on_trains(&block)
-    @trains.each(&block)
+  def on_trains
+    @trains.each { |tr| yield(tr) }
   end
 
   def valid?

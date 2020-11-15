@@ -12,8 +12,8 @@ class Train
   attr_reader :current_station, :num, :route, :wagon_list
   attr_accessor :speed
 
-  def on_wagons(&block)
-    @wagon_list.each(&block)
+  def on_wagons
+    @wagon_list.each { |w| yield(w) }
   end
 
   def self.find(number)
