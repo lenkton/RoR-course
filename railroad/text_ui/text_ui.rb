@@ -8,6 +8,7 @@ require './core/route'
 require_relative 'create'
 require_relative 'form_checker'
 require_relative 'commands'
+require_relative 'tui_exception'
 
 # the main class
 class TextUI
@@ -31,7 +32,7 @@ class TextUI
       command = gets.split
       begin
         run_command(command[0..-1]) unless command.empty?
-      rescue RuntimeError => e
+      rescue RailroadException => e
         puts e.message
       end
     end
@@ -61,7 +62,7 @@ class TextUI
     when 'take-seat' then take_seat(args)
     when 'wagons' then wagons(args)
     else
-      raise "There is no command '#{command[0]}'"
+      raise TUIException, "There is no command '#{command[0]}'"
     end
   end
 end

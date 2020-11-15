@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require_relative 'wagon'
+require_relative 'railroad_exception'
 
 # PassengerWagon class
 class PassengerWagon < Wagon
   attr_reader :seats_available
 
   def initialize(name, seats)
-    raise 'Seats should be of type Fixnum (or Bignum)' unless seats.is_a?(Integer)
+    raise RailroadException, 'Seats should be of type Integer' unless seats.is_a?(Integer)
 
     super(name)
     @seats_total = seats
@@ -15,7 +16,7 @@ class PassengerWagon < Wagon
   end
 
   def take_seat
-    raise 'No available seats' if @seats_available.zero?
+    raise RailroadException, 'No available seats' if @seats_available.zero?
 
     @seats_available -= 1
   end

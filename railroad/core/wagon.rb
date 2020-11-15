@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'producer'
+require_relative 'railroad_exception'
 
 # General Wagon class
 class Wagon
@@ -25,6 +26,6 @@ class Wagon
   private
 
   def validate!
-    raise 'Basic Wagon cannot be instantiated' if type.nil?
+    raise RailroadException, 'Basic Wagon cannot be instantiated' if type.nil?
   end
 end

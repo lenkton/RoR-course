@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'instance_counter'
+require_relative 'railroad_exception'
 
 # Station class
 class Station
@@ -47,7 +48,7 @@ class Station
   private
 
   def validate!
-    raise 'The name of a Station cannot be nil' if @name.nil?
+    raise RailroadException, 'The name of a Station cannot be nil' if @name.nil?
   end
 
   @@stations = []

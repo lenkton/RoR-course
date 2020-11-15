@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'text'
+require_relative 'tui_exception'
 
 # checks the form of a query
 module FormChecker
@@ -37,12 +38,12 @@ module FormChecker
 
     raise ArgumentError, 'Wrong correct_args in correct_form!()' if class_name_of(correct_arg).nil?
 
-    raise "#{class_name_of(correct_arg)} #{arg} does not exist" unless array_of(correct_arg).include?(arg)
+    raise TUIException, "#{class_name_of(correct_arg)} #{arg} does not exist" unless array_of(correct_arg).include?(arg)
   end
 
   # checks, if a user command follows the convention
   def check_form!(args, correct_args)
-    raise ARG_NUM_ERROR if args.nil? || (args.size < correct_args.size)
+    raise TUIException, ARG_NUM_ERROR if args.nil? || (args.size < correct_args.size)
 
     (0..(correct_args.size - 1)).each do |i|
       check_arg(args[i], correct_args[i])

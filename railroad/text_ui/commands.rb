@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'form_checker'
+require_relative 'tui_exception'
+require './core/passenger_wagon'
+require './core/cargo_wagon'
+
 # module with nearly all commands
 module Commands
   protected
@@ -21,7 +26,7 @@ module Commands
   def add_wagon(args)
     check_form!(args, %i[train any any])
 
-    raise "A wagon with the name #{args[1]} already exist" if @wagons.include?(args[1])
+    raise TUIException, "A wagon with the name #{args[1]} already exist" if @wagons.include?(args[1])
 
     num = args[2].to_i
 
@@ -84,21 +89,20 @@ module Commands
       when :cargo
         puts "Available capacity: #{w.available}"
         puts "Occupied capacity: #{w.occupied}"
-      else raise "Wrong type of the Train #{w.num}"
+      else raise TypeError, "Wrong type of the Train #{w.num}"
       end
     end
   end
 
   def move(args)
     check_form!(args, %i[train any])
-
-    raise "The train #{args[0]} has no Route assigned!" unless @trains[args[0]].route
+    raise TUIException, "The train #{args[0]} has no Route assigned!" unless @trains[args[0]].route
 
     case args[1]
     when 'forward' then @trains[args[0]].move_forward
     when 'back' then @trains[args[0]].move_backward
     else
-      raise 'Wrong direction. Trains could move only back and forward.'
+      raise TUIException, 'Wrong direction. Trains could move only back and forward.'
     end
 
     puts "Train #{args[0]} was successfully moved #{args[1]} "\
@@ -108,7 +112,7 @@ module Commands
   def occupy(args)
     check_form!(args, %i[wagon any])
 
-    raise "Only CargoWagons could be 'occupied'" if @wagons[args[0]].type != :cargo
+    raise TUIException, "Only CargoWagons could be 'occupied'" if @wagons[args[0]].type != :cargo
 
     @wagons[args[0]].occupy(args[1].to_i)
     puts "Wagon #{args[0]} is successfully filled with the stuff"
@@ -117,7 +121,7 @@ module Commands
   def take_seat(args)
     check_form!(args, [:wagon])
 
-    raise 'Seats could be taken only in PassengerWagons' if @wagons[args[0]].type != :passenger
+    raise TUIException, 'Seats could be taken only in PassengerWagons' if @wagons[args[0]].type != :passenger
 
     @wagons[args[0]].take_seat
     puts "A seat in the PassengerWagon #{args[0]} has been taken"

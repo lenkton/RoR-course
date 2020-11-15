@@ -2,6 +2,7 @@
 
 require_relative 'producer'
 require_relative 'instance_counter'
+require_relative 'railroad_exception'
 
 # Train class
 class Train
@@ -107,8 +108,10 @@ class Train
   @@trains = []
 
   def validate!(num)
-    raise 'Number of train cannot be nil' if num.nil?
-    raise 'Incorrect train number format' if /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i !~ num
-    raise 'Basic Train cannot be instantiated' if type.nil?
+    raise RailroadException, 'Number of train cannot be nil' if num.nil?
+
+    raise RailroadException, 'Incorrect train number format' if /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i !~ num
+
+    raise RailroadException, 'Basic Train cannot be instantiated' if type.nil?
   end
 end
