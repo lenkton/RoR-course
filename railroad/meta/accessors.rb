@@ -9,13 +9,15 @@ module Accessors
     base.send :include, InstanceMethods
   end
 
-  # methods to include in a class
+  # methods to extend a class
   module ClassMethods
+    # to be used in children, but not outside the class
+
+    protected
+
     def attr_accessor_with_history(*args)
       args.each do |arg|
-        unless arg.is_a?(Symbol)
-          raise MetaException, 'attr_accessor_with_history requires symbols'
-        end
+        raise MetaException, 'attr_accessor_with_history requires symbols' unless arg.is_a?(Symbol)
 
         define_method(arg) do
           instance_variable_get("@#{arg}")
@@ -41,16 +43,14 @@ module Accessors
       end
 
       define_method("#{name}=".to_sym) do |value|
-        unless value.is_a?(type)
-          raise MetaException, 'Wrong argument type'
-        end
+        raise MetaException, 'Wrong argument type' unless value.is_a?(type)
 
         instance_variable_set("@#{name}", value)
       end
     end
   end
 
-  # methods to extend a class
+  # methods to include in a class
   module InstanceMethods
   end
 end

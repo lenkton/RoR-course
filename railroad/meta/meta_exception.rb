@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
 # meta exception
-class MetaException < Exception; end
+class MetaException < RuntimeError; end
