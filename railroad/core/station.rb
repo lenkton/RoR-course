@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 require_relative 'instance_counter'
+require_relative 'railroad_exception'
 
-# Ruby ver. 2.2.1
+# Station class
 class Station
   include InstanceCounter
 
   attr_reader :trains, :name
+
+  def on_trains
+    @trains.each { |tr| yield(tr) }
+  end
 
   def valid?
     validate!
@@ -43,7 +48,7 @@ class Station
   private
 
   def validate!
-    raise 'The name of a Station cannot be nil' if @name.nil?
+    raise RailroadException, 'The name of a Station cannot be nil' if @name.nil?
   end
 
   @@stations = []

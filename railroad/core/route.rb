@@ -2,7 +2,9 @@
 
 require_relative 'instance_counter'
 require_relative 'station'
+require_relative 'railroad_exception'
 
+# Route class
 class Route
   include InstanceCounter
 
@@ -43,8 +45,10 @@ class Route
   private
 
   def validate!
-    raise 'Route number cannot be nil' if @number.nil?
-    raise 'First station should be an instance of Station' if @first.class != :Station
-    raise 'Second station should be an instance of Station' if @second.class != :Station
+    raise RailroadException, 'Route number cannot be nil' if @number.nil?
+
+    raise RailroadException, 'First station should be an instance of Station' if @first.class != :Station
+
+    raise RailroadException, 'Second station should be an instance of Station' if @second.class != :Station
   end
 end

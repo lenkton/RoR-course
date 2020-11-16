@@ -1,0 +1,1 @@
+class RailroadException < RuntimeError; end
