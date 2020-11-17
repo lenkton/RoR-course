@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'meta_exception'
+require 'set'
 
 # validation module
 module Validation
@@ -21,7 +22,14 @@ module Validation
       end
 
       type_sym = "@#{type}".to_sym
-      instance_variable_set(type_sym, instance_variable_get(type_sym) || [] << [name, args])
+      instance_variable_set(
+        type_sym,
+        instance_variable_get(type_sym) || [] << [name, args]
+      )
+      instance_variable_set(
+        '@to_validate',
+        (instance_variable_get('@to_validate') || Set[]) << type # note: 'type' is passed
+      )
     end
   end
 
@@ -37,34 +45,32 @@ module Validation
     protected
 
     def validate!
-      %i[@presence @format @type].each do |type|
-        next unless (needs_validation = self.class.instance_variable_get(type))
+      return unless (validation_types = self.class.instance_variable_get('@to_validate'))
+
+      validation_types.each do |type|
+        next unless (needs_validation = self.class.instance_variable_get("@#{type}".to_sym))
 
         needs_validation.each do |entry|
-          case type
-          when :@presence then check_presence(entry[0])
-          when :@format then check_format(entry[0], entry[1])
-          when :@type then check_type(entry[0], entry[1])
-          end
+          send(type, entry[0], entry[1..-1])
         end
       end
     end
 
     private
 
-    def check_type(name, *args)
-      raise MetaException, 'type checking needs a Class' unless args[0].is_a?(Class)
+    def type(name, *args)
+      raise MetaException, 'type checking needs a Class' unless args[0][0][0].is_a?(Class)
 
-      unless instance_variable_get("@#{name}".to_sym).is_a?(args[0])
+      unless instance_variable_get("@#{name}".to_sym).is_a?(args[0][0][0])
         raise MetaException, "#{name} is of incorrect class"
       end
     end
 
-    def check_format(name, *args)
-      raise MetaException, "#{name} is in incorrect format" if instance_variable_get("@#{name}".to_sym) !~ args[0][0]
+    def format(name, *args)
+      raise MetaException, "#{name} is in incorrect format" if instance_variable_get("@#{name}".to_sym) !~ args[0][0][0]
     end
 
-    def check_presence(name)
+    def presence(name, *)
       a = instance_variable_get("@#{name}".to_sym)
       raise MetaException, "#{name} is not present" unless a && a != ''
     end

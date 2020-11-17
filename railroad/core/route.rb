@@ -12,15 +12,16 @@ class Route
 
   attr_reader :first, :last, :number
 
-  validate :number, :present
-  validate :second, :type, Station
+  validate :number, :presence
   validate :first, :type, Station
+  validate :second, :type, Station
 
   def initialize(first, last, number)
     @first = first
     @last = last
-    @intermediate = []
     @number = number
+    validate!
+    @intermediate = []
     register_instance
   end
 
