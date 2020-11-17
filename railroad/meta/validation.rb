@@ -61,7 +61,7 @@ module Validation
     end
 
     def check_format(name, *args)
-      raise MetaException, "#{name} is in incorrect format" if args[0] !~ instance_variable_get("@#{name}".to_sym)
+      raise MetaException, "#{name} is in incorrect format" if instance_variable_get("@#{name}".to_sym) !~ args[0][0]
     end
 
     def check_presence(name)
