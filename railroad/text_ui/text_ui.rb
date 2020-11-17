@@ -61,6 +61,7 @@ class TextUI
     when 'require' then occupy(args)
     when 'take-seat' then take_seat(args)
     when 'wagons' then wagons(args)
+    when 'producer' then producer(args)
     else
       raise TUIException, "There is no command '#{command[0]}'"
     end

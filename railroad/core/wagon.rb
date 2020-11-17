@@ -2,10 +2,12 @@
 
 require_relative 'producer'
 require_relative 'railroad_exception'
+require './meta/validation'
 
 # General Wagon class
 class Wagon
   include Producer
+  include Validation
 
   attr_reader :num
 

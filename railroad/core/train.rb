@@ -20,6 +20,8 @@ class Train
   validate :num, :presence
   validate :num, :format, /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i
 
+  @@trains = []
+
   def on_wagons
     @wagon_list.each { |w| yield(w) }
   end

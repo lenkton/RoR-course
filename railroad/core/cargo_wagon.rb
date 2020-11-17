@@ -10,7 +10,9 @@ class CargoWagon < Wagon
 
   attr_reader :available
 
-  validate :total_capacity, Integer
+  validate :total_capacity, :type, Integer
+  validate :type, :presence
+  validate :num, :presence
 
   def initialize(num, total_capacity)
     validate!

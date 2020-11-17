@@ -10,7 +10,9 @@ class PassengerWagon < Wagon
 
   attr_reader :seats_available
 
-  validate :seats_total, Integer
+  validate :seats_total, :type, Integer
+  validate :type, :presence
+  validate :num, :presence
 
   def initialize(name, seats)
     @seats_total = seats
