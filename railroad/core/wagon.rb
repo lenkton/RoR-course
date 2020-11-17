@@ -9,23 +9,14 @@ class Wagon
 
   attr_reader :num
 
+  validate :type, :presence
+  validate :num, :presence
+
   def initialize(num)
     @num = num
+    @type = type
     validate!
   end
 
   def type; end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
-  end
-
-  private
-
-  def validate!
-    raise RailroadException, 'Basic Wagon cannot be instantiated' if type.nil?
-  end
 end

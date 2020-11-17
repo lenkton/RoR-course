@@ -32,7 +32,7 @@ class TextUI
       command = gets.split
       begin
         run_command(command[0..-1]) unless command.empty?
-      rescue RailroadException => e
+      rescue RailroadException, MetaException => e
         puts e.message
       end
     end

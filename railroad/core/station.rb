@@ -2,22 +2,19 @@
 
 require_relative 'instance_counter'
 require_relative 'railroad_exception'
+require './meta/validation'
 
 # Station class
 class Station
   include InstanceCounter
+  include Validation
 
   attr_reader :trains, :name
 
+  validate :name, :presence
+
   def on_trains
     @trains.each { |tr| yield(tr) }
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def self.all
@@ -43,12 +40,6 @@ class Station
 
   def send_train(train)
     @trains.delete train
-  end
-
-  private
-
-  def validate!
-    raise RailroadException, 'The name of a Station cannot be nil' if @name.nil?
   end
 
   @@stations = []

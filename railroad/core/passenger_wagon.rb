@@ -2,17 +2,23 @@
 
 require_relative 'wagon'
 require_relative 'railroad_exception'
+require './meta/validation'
 
 # PassengerWagon class
 class PassengerWagon < Wagon
+  include Validation
+
   attr_reader :seats_available
 
+  validate :seats_total, Integer
+
   def initialize(name, seats)
-    raise RailroadException, 'Seats should be of type Integer' unless seats.is_a?(Integer)
+    @seats_total = seats
+    validate!
+    
+    @seats_available = @seats_total
 
     super(name)
-    @seats_total = seats
-    @seats_available = seats
   end
 
   def take_seat
