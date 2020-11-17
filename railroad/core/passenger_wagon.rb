@@ -15,7 +15,7 @@ class PassengerWagon < Wagon
   def initialize(name, seats)
     @seats_total = seats
     validate!
-    
+
     @seats_available = @seats_total
 
     super(name)

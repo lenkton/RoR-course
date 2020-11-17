@@ -13,7 +13,6 @@ class CargoWagon < Wagon
   validate :total_capacity, Integer
 
   def initialize(num, total_capacity)
-
     validate!
     super(num)
     @capacity = total_capacity
