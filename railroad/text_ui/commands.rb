@@ -7,7 +7,6 @@ require './core/cargo_wagon'
 
 # module with nearly all commands
 module Commands
-
   protected
 
   def add_station(args)
