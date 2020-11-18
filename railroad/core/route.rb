@@ -14,7 +14,7 @@ class Route
 
   validate :number, :presence
   validate :first, :type, Station
-  validate :second, :type, Station
+  validate :last, :type, Station
 
   def initialize(first, last, number)
     @first = first
