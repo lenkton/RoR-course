@@ -15,6 +15,9 @@ HELP =
   "move <train> [forward/back] - move the Train with the number <train>\n"\
   "               forward (if 'forward') or backward (if 'back')\n"\
   "               according to assigned Route\n"\
+  "producer <train> set <name> - set <name> as a producer name for the train <train>\n"\
+  "producer <train> show - set the producer name for the train <train>\n"\
+  "producer <train> show all - show the history of producing the train <train>\n"\
   "remove-station <station> <route> - remove the Station with the name <station>\n"\
   "               from the Route with the number <route>\n"\
   "remove-wagon <train> - remove a Wagon from the Train with the name <train>\n"\

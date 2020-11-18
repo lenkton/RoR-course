@@ -3,14 +3,24 @@
 require_relative 'producer'
 require_relative 'instance_counter'
 require_relative 'railroad_exception'
+require './meta/validation'
+require './meta/accessors'
 
 # Train class
 class Train
   include Producer
   include InstanceCounter
+  include Validation
+  include Accessors
 
   attr_reader :current_station, :num, :route, :wagon_list
-  attr_accessor :speed
+
+  strong_attr_accessor :speed, Integer
+
+  validate :num, :presence
+  validate :num, :format, /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i
+
+  @@trains = []
 
   def on_wagons
     @wagon_list.each { |w| yield(w) }
@@ -20,17 +30,10 @@ class Train
     @@trains.find { |tr| tr.num == number }
   end
 
-  def valid?
-    validate!(@num)
-    true
-  rescue StandardError
-    false
-  end
-
   def initialize(num)
-    validate!(num)
-    @wagon_list = []
     @num = num
+    validate!
+    @wagon_list = []
     @speed = 0
     @@trains << self
     register_instance
@@ -101,17 +104,5 @@ class Train
     return @current_station if @current_station == @route.last
 
     @route.stations[@route.stations.index(@current_station) + 1]
-  end
-
-  private
-
-  @@trains = []
-
-  def validate!(num)
-    raise RailroadException, 'Number of train cannot be nil' if num.nil?
-
-    raise RailroadException, 'Incorrect train number format' if /^[a-z0-9]{3}(-[a-z0-9]{2})?$/i !~ num
-
-    raise RailroadException, 'Basic Train cannot be instantiated' if type.nil?
   end
 end

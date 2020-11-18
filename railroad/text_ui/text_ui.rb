@@ -32,7 +32,7 @@ class TextUI
       command = gets.split
       begin
         run_command(command[0..-1]) unless command.empty?
-      rescue RailroadException => e
+      rescue RailroadException, MetaException => e
         puts e.message
       end
     end
@@ -61,6 +61,7 @@ class TextUI
     when 'require' then occupy(args)
     when 'take-seat' then take_seat(args)
     when 'wagons' then wagons(args)
+    when 'producer' then producer(args)
     else
       raise TUIException, "There is no command '#{command[0]}'"
     end

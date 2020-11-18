@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require './meta/accessors'
+
 # module to hold a producer name
 module Producer
-  attr_accessor :producer
+  include Accessors
+
+  attr_accessor_with_history :producer
 end

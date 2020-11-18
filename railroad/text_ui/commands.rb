@@ -23,6 +23,33 @@ module Commands
     puts "Station #{args[0]} was successfully removed from the Route #{args[1]}"
   end
 
+  def producer(args)
+    check_form!(args, %i[train any])
+
+    case args[1]
+    when 'show' then producer_show(args[0], args[2..-1])
+    when 'set' then producer_set(args[0], args[2..-1])
+    else raise TUIException, "Wrong second argument for a 'producer' command"
+    end
+  end
+
+  # train is a string (for consistency)
+  def producer_show(train, args)
+    case args
+    when [] then puts @trains[train].producer
+    when ['all'] then puts @trains[train].producer_history
+    else raise TUIException, "Wrong arguments for a 'producer' command"
+    end
+  end
+
+  # train is a string (for consistency)
+  def producer_set(train, args)
+    check_form!(args, [:any])
+
+    @trains[train].producer = args[0]
+    puts 'Producer has been successfully set'
+  end
+
   def add_wagon(args)
     check_form!(args, %i[train any any])
 

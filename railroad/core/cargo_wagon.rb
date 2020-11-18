@@ -2,14 +2,20 @@
 
 require_relative 'wagon'
 require_relative 'railroad_exception'
+require './meta/validation'
 
 # CargoWagon class
 class CargoWagon < Wagon
+  include Validation
+
   attr_reader :available
 
-  def initialize(num, total_capacity)
-    raise RailroadException, 'CargoWagon caparcity should be an integer' unless total_capacity.is_a?(Integer)
+  validate :total_capacity, :type, Integer
+  validate :type, :presence
+  validate :num, :presence
 
+  def initialize(num, total_capacity)
+    validate!
     super(num)
     @capacity = total_capacity
     @available = total_capacity
